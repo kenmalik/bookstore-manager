@@ -11,11 +11,11 @@ public class Main {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
-        // Logger configuration
+        // Logger config
         LOGGER.setLevel(Level.ALL);
 
         // TODO: READ INVENTORY FROM FILE
-        LOGGER.info("Loading inventory...\n");
+        LOGGER.log(Level.INFO, "Loading inventory...\n");
         Inventory inventory = new Inventory();
 
         boolean done = false;
