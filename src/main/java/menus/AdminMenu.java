@@ -5,7 +5,7 @@ public class AdminMenu implements ProgramMenu {
         boolean done = false;
 
         while (!done) {
-            System.out.println();
+            System.out.println("\n--- ADMIN MENU ---");
 
             int actionChoice = MenuUtil.choicePrompt(
                     "Choose Action:",
