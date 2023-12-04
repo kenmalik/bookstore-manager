@@ -1,23 +1,37 @@
 package main.java;
 
+import main.java.menus.Menus;
+import main.java.menus.MenuUtil;
+import main.java.objects.Inventory;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Main {
+    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+
     public static void main(String[] args) {
+        // Logger configuration
+        LOGGER.setLevel(Level.ALL);
+
+        // TODO: READ INVENTORY FROM FILE
+        LOGGER.info("Loading inventory...\n");
         Inventory inventory = new Inventory();
 
-        inventory.add(new Book());
-        inventory.add(new Book("A Promised Land", "Barack Obama", "Biography", 30, 5));
-        System.out.println("Before Removal:");
-        displayInventory(inventory);
+        boolean done = false;
+        while (!done) {
+            System.out.println();
 
-        inventory.remove(new Book());
-        System.out.println("After Removal:");
-        displayInventory(inventory);
-    }
+            int userType = MenuUtil.choicePrompt(
+                    "Choose User Type:",
+                    Menus.ADMIN.getLabel(),
+                    Menus.CUSTOMER.getLabel());
 
-
-    public static void displayInventory(Inventory inventory) {
-        for (Book book : inventory.getInventory()) {
-            System.out.println(book);
+            switch (userType) {
+                case 1 -> Menus.ADMIN.display();
+                case 2 -> Menus.CUSTOMER.display();
+                case Menus.DONE_DISPLAYING -> done = true;
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package main.java;
+package main.java.objects;
 
 /**
  * A class that represents a customer at a store, storing their name, contact info, and loyalty discounts.

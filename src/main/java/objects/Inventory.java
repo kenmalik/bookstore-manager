@@ -1,4 +1,6 @@
-package main.java;
+package main.java.objects;
+
+import main.java.objects.Book;
 
 import java.util.ArrayList;
 
@@ -46,7 +48,7 @@ public class Inventory {
 
     @Override
     public String toString() {
-        return "main.java.Inventory{" +
+        return "main.java.objects.Inventory{" +
                 "inventory=" + inventory +
                 '}';
     }

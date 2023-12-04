@@ -1,7 +1,7 @@
 package test.java;
 
-import main.java.Book;
-import main.java.Inventory;
+import main.java.objects.Book;
+import main.java.objects.Inventory;
 
 public class InventoryTest {
     public static void main(String[] args) {

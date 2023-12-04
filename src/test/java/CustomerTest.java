@@ -1,6 +1,6 @@
 package test.java;
 
-import main.java.Customer;
+import main.java.objects.Customer;
 
 public class CustomerTest {
     public static void main(String[] args) {

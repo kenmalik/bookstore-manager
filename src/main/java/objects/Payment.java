@@ -1,4 +1,4 @@
-package main.java;
+package main.java.objects;
 
 /**
  * A class that provides functionality for payment validation and processing.

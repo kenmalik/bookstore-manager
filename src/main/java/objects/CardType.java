@@ -1,4 +1,4 @@
-package main.java;
+package main.java.objects;
 
 /**
  * An enumeration that represents a credit/debit card type.

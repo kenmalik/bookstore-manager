@@ -1,7 +1,7 @@
 package test.java;
 
-import main.java.Book;
-import main.java.ShoppingCart;
+import main.java.objects.Book;
+import main.java.objects.ShoppingCart;
 
 public class ShoppingCartTest {
     public static void main(String[] args) {
