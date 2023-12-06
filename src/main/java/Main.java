@@ -29,11 +29,12 @@ public class Main {
             int userType = MenuUtil.choicePrompt(
                     "Choose User Type:",
                     Menus.ADMIN.getLabel(),
-                    Menus.CUSTOMER.getLabel());
+                    Menus.CUSTOMER.getLabel()
+            );
 
             switch (userType) {
-                case 1 -> Menus.ADMIN.display();
-                case 2 -> Menus.CUSTOMER.display();
+                case 1 -> Menus.ADMIN.display(inventory);
+                case 2 -> Menus.CUSTOMER.display(inventory);
                 case Menus.DONE_DISPLAYING -> done = true;
             }
         }

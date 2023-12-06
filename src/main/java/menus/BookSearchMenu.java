@@ -1,5 +1,7 @@
 package main.java.menus;
 
+import main.java.objects.Inventory;
+
 public class BookSearchMenu implements ProgramMenu {
     private enum SearchType {
         TITLE(1), AUTHOR(2), GENRE(3), PRICE(4);
@@ -15,7 +17,7 @@ public class BookSearchMenu implements ProgramMenu {
     }
 
     @Override
-    public void display() {
+    public void display(Inventory inventory) {
         boolean done = false;
 
         while (!done) {

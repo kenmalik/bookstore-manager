@@ -52,11 +52,4 @@ public class MenuUtil {
             System.out.println(items[i]);
         }
     }
-
-
-    public static void displayInventory(Inventory inventory) {
-        for (Book book : inventory.getInventory()) {
-            System.out.println(book);
-        }
-    }
 }
