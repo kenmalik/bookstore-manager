@@ -1,5 +1,7 @@
 package main.java.menus;
 
+import main.java.objects.Inventory;
+
 public interface ProgramMenu {
-    void display();
+    void display(Inventory inventory);
 }

@@ -6,6 +6,7 @@ import java.util.Objects;
  * A class that represents a book in a bookstore, containing the book's information as well as its list price and availability.
  */
 public class Book {
+    public static final int ARG_COUNT = 5;
     private String title;
     private String author;
     private String genre;
@@ -27,7 +28,7 @@ public class Book {
      * @param author the author of the book.
      * @param genre the genre of the book.
      * @param price the price of the book.
-     * @param availability the amount of copies available in inventory.
+     * @param availability the amount of copies available in testInventory.dat.
      */
     public Book(String title, String author, String genre, double price, int availability) {
         this.title = title;
@@ -150,5 +151,17 @@ public class Book {
                 ", price=" + price +
                 ", availability=" + availability +
                 '}';
+    }
+
+
+    /**
+     * Creates a csv line from book data.
+     * @return a csv line containing a book's data.
+     */
+    public String toCsv() {
+        return String.format(
+          "%s,%s,%s,%.2f,%d",
+          title, author, genre, price, availability
+        );
     }
 }

@@ -1,9 +1,13 @@
 package main.java.menus;
 
+import main.java.objects.Inventory;
+
 public enum Menus {
     ADMIN(new AdminMenu(), "Admin"),
     CUSTOMER(new CustomerMenu(), "Customer"),
-    BOOK_SEARCH(new BookSearchMenu(), "Book Search");
+    BOOK_SEARCH(new BookSearchMenu(), "Book Search"),
+    VIEW_INVENTORY(new ViewInventoryMenu(), "View Inventory"),
+    ADD_BOOK(new AddBookMenu(), "Add Book");
 
     public static final int DONE_DISPLAYING = -1;
     private final ProgramMenu menu;
@@ -16,8 +20,8 @@ public enum Menus {
     }
 
 
-    public void display() {
-        menu.display();
+    public void display(Inventory inventory) {
+        menu.display(inventory);
     }
 
 
