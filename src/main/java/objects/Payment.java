@@ -1,6 +1,6 @@
 package main.java.objects;
 
-import main.java.menus.PromptSelection;
+import main.java.utilities.PromptSelection;
 
 /**
  * A class that provides functionality for payment validation and processing.

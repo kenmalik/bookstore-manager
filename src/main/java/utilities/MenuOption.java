@@ -1,5 +1,6 @@
-package main.java.menus;
+package main.java.utilities;
 
+import main.java.menus.*;
 import main.java.objects.Inventory;
 
 public enum MenuOption implements PromptSelection {

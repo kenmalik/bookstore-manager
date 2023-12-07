@@ -1,4 +1,4 @@
-package main.java.menus;
+package main.java.utilities;
 
 import main.java.objects.Inventory;
 

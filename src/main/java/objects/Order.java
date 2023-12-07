@@ -1,6 +1,6 @@
 package main.java.objects;
 
-import main.java.menus.MenuUtil;
+import main.java.utilities.MenuUtil;
 
 import java.util.ArrayList;
 

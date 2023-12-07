@@ -3,6 +3,10 @@ package main.java.menus;
 import main.java.objects.Book;
 import main.java.objects.Inventory;
 import main.java.objects.ShoppingCart;
+import main.java.utilities.MenuUtil;
+import main.java.utilities.ProgramMenu;
+import main.java.utilities.PromptSelection;
+import main.java.utilities.UserType;
 
 public class ViewInventoryMenu implements ProgramMenu {
     private ShoppingCart cart;

@@ -1,7 +1,7 @@
 package main.java.objects;
 
-import main.java.menus.MenuUtil;
-import main.java.menus.PromptSelection;
+import main.java.utilities.MenuUtil;
+import main.java.utilities.PromptSelection;
 
 import java.util.Objects;
 

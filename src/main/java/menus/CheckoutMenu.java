@@ -1,6 +1,10 @@
 package main.java.menus;
 
 import main.java.objects.*;
+import main.java.utilities.MenuUtil;
+import main.java.utilities.ProgramMenu;
+import main.java.utilities.PromptSelection;
+import main.java.utilities.UserType;
 
 public class CheckoutMenu implements ProgramMenu {
     private enum CheckoutOption implements PromptSelection {

@@ -1,4 +1,4 @@
-package main.java.menus;
+package main.java.utilities;
 
 public interface PromptSelection {
     enum StandardOption implements PromptSelection {

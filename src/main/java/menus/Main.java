@@ -1,8 +1,8 @@
-package main.java;
+package main.java.menus;
 
-import main.java.menus.MenuOption;
-import main.java.menus.MenuUtil;
-import main.java.menus.UserType;
+import main.java.utilities.MenuOption;
+import main.java.utilities.MenuUtil;
+import main.java.utilities.UserType;
 import main.java.objects.Inventory;
 
 import java.io.File;

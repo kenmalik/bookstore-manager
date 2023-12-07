@@ -1,6 +1,10 @@
 package main.java.menus;
 
 import main.java.objects.Inventory;
+import main.java.utilities.MenuOption;
+import main.java.utilities.MenuUtil;
+import main.java.utilities.ProgramMenu;
+import main.java.utilities.UserType;
 
 public class AdminMenu implements ProgramMenu {
     public void display(Inventory inventory, UserType userType) {

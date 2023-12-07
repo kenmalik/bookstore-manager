@@ -2,6 +2,10 @@ package main.java.menus;
 
 import main.java.objects.Book;
 import main.java.objects.Inventory;
+import main.java.utilities.MenuUtil;
+import main.java.utilities.ProgramMenu;
+import main.java.utilities.PromptSelection;
+import main.java.utilities.UserType;
 
 public class AddBookMenu implements ProgramMenu {
     @Override

@@ -3,6 +3,10 @@ package main.java.menus;
 import main.java.objects.Book;
 import main.java.objects.Inventory;
 import main.java.objects.ShoppingCart;
+import main.java.utilities.MenuUtil;
+import main.java.utilities.ProgramMenu;
+import main.java.utilities.PromptSelection;
+import main.java.utilities.UserType;
 
 import java.util.ArrayList;
 
@@ -11,7 +15,7 @@ public class BookSearchMenu implements ProgramMenu {
     private ShoppingCart cart;
     private static final String NONE_FOUND_MESSAGE = "No matches found.";
 
-    private enum SearchType implements  PromptSelection {
+    private enum SearchType implements PromptSelection {
         TITLE, AUTHOR, GENRE, PRICE;
         public String getLabel() {
             return name().charAt(0) + name().substring(1).toLowerCase();
