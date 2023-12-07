@@ -43,15 +43,5 @@ public class PaymentTest {
         cardPayment = new Payment("2321432143214321", "0024");
         System.out.println(cardPayment.isValidCard());
         System.out.println("Expected: false");
-
-        // --- CASH PAYMENT ---
-        System.out.println("\nCash Tests:");
-        Payment cashPayment = new Payment(12);
-        System.out.println(cashPayment.validateCash(12));
-        System.out.println("Expected: 0");
-        System.out.println(cashPayment.validateCash(11));
-        System.out.println("Expected: 1");
-        System.out.println(cashPayment.validateCash(13));
-        System.out.println("Expected: -1");
     }
 }

@@ -9,7 +9,7 @@ public enum MenuOption {
     VIEW_INVENTORY(new ViewInventoryMenu(), "View Inventory"),
     ADD_BOOK(new AddBookMenu(), "Add Book"),
     REMOVE_BOOK(new RemoveBookMenu(), "Remove Book"),
-    CHECKOUT(new CheckoutMenu(), "Checkout");
+    CHECKOUT(new CheckoutMenu(), "Proceed to Checkout");
 
     public static final int DONE_DISPLAYING = -1;
     private final ProgramMenu menu;

@@ -24,7 +24,7 @@ public class Payment {
     private String expirationDate;
 
     // For cash
-    private double cashPaid;
+    private final double cashPaid;
 
 
     public Payment() {
@@ -38,7 +38,7 @@ public class Payment {
     public Payment(String cardNumber, String expirationDate) {
         paymentType = PaymentType.CARD;
         this.cardNumber = cardNumber;
-        cardType = CardType.VISA;
+        setCardType();
         this.expirationDate = expirationDate;
         cashPaid = -1;
     }
@@ -63,6 +63,17 @@ public class Payment {
     }
 
 
+    public boolean setCardType() {
+        for (CardType type : CardType.values()) {
+            if (Character.getNumericValue(cardNumber.charAt(0)) == type.firstDigit) {
+                cardType = type;
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     /**
      * (If payment type is card) returns the card number.
      * @return the card number.
@@ -77,8 +88,9 @@ public class Payment {
      * @return the censored card number.
      */
     public String getCensoredCardNumber() {
-        return "X".repeat(cardNumber.length() - 4)
-                +  cardNumber.substring(cardNumber.length() - 4);
+        final int VISIBLE_NUMBER_COUNT = 4;
+        return "X".repeat(cardNumber.length() - VISIBLE_NUMBER_COUNT)
+                +  cardNumber.substring(cardNumber.length() - VISIBLE_NUMBER_COUNT);
     }
 
 
@@ -88,24 +100,6 @@ public class Payment {
      */
     public double getCashPaid() {
         return cashPaid;
-    }
-
-
-    /**
-     * (If payment type is card) sets the card number.
-     * @param cardNumber the card number.
-     */
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-
-
-    /**
-     * (If payment type is cash) sets the amount of cash paid by the customer.
-     * @param cashPaid the amount of cash paid by the customer.
-     */
-    public void setCashPaid(double cashPaid) {
-        this.cashPaid = cashPaid;
     }
 
 
@@ -120,6 +114,7 @@ public class Payment {
         return isValidCardDigits() && isValidCardExpiration();
     }
 
+
     /**
      * Returns whether the card number is valid.
      * @return whether the card number is valid.
@@ -130,22 +125,22 @@ public class Payment {
         boolean isValidLength = cardNumber.length() >= MIN_CARD_DIGIT_COUNT
                 && cardNumber.length() <= MAX_CARD_DIGIT_COUNT;
 
-        boolean isValidFirstDigit = false;
-        for (CardType type : CardType.values()) {
-            if (Character.getNumericValue(cardNumber.charAt(0)) == type.firstDigit) {
-                isValidFirstDigit = true;
-                break;
-            }
-        }
+        boolean isValidFirstDigit = setCardType();
 
         return isValidFirstDigit && isValidLength;
     }
+
 
     /**
      * Returns whether the card expiration is valid.
      * @return whether the card expiration is valid.
      */
     private boolean isValidCardExpiration() {
+        final int MAX_DATE_DIGIT_COUNT = 4;
+        if (expirationDate.length() != MAX_DATE_DIGIT_COUNT) {
+            return false;
+        }
+
         final int YEAR_LAST_TWO_DIGITS = 100;
         final int MAX_MONTH = 12;
 
@@ -162,18 +157,5 @@ public class Payment {
         int currentMonth = java.time.LocalDate.now().getMonthValue();
 
         return expirationYear > currentYear || (expirationYear == currentYear && expirationMonth >= currentMonth);
-    }
-
-
-    /**
-     * (If payment type is cash) returns whether the cash provided was adequate. -1 means cash paid was less than cost,
-     * 0 means cash paid was equal to cost, 1 means cash paid was greater than cost.
-     * @return whether the cash provided was adequate.
-     */
-    public int validateCash(double total) {
-        if (paymentType == PaymentType.CARD) {
-            return -1;
-        }
-        return Double.compare(cashPaid, total);
     }
 }

@@ -1,7 +1,5 @@
 package main.java.menus;
 
-import main.java.objects.Book;
-import main.java.objects.Inventory;
 import java.util.Scanner;
 
 public class MenuUtil {
@@ -21,10 +19,10 @@ public class MenuUtil {
             System.out.print(">>> ");
             if (in.hasNextInt()) {
                 int input = in.nextInt();
-                if (input > options.length) {
+                if (input == options.length + 1) {
                     return -1;
                 }
-                else if (input > 0) {
+                else if (input > 0 && input <= options.length) {
                     return input;
                 }
                 else {
@@ -69,7 +67,7 @@ public class MenuUtil {
                 doubleInputted = true;
             }
             else {
-                System.out.println(" ! Please enter a double.");
+                System.out.println("Please enter a double.");
                 in.nextLine();
             }
         }
@@ -87,7 +85,7 @@ public class MenuUtil {
                 integerInputted = true;
             }
             else {
-                System.out.println(" ! Please enter an integer.");
+                System.out.println("Please enter an integer.");
                 in.nextLine();
             }
         }
@@ -96,8 +94,21 @@ public class MenuUtil {
     }
 
     public static String getStringInput(String message) {
-        System.out.print(message);
         Scanner in = new Scanner(System.in);
-        return in.nextLine();
+
+        String input = "";
+        boolean emptyString = true;
+        while (emptyString) {
+            System.out.print(message);
+            input = in.nextLine();
+            if (input.isEmpty()) {
+                System.out.println("Please enter a nonempty string.");
+            }
+            else {
+                emptyString = false;
+            }
+        }
+
+        return input;
     }
 }
