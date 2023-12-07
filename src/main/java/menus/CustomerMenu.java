@@ -31,7 +31,11 @@ public class CustomerMenu implements ProgramMenu {
 
     private void performAction(MenuOption actionChoice, UserType userType, Inventory inventory, ShoppingCart cart) {
         switch (actionChoice) {
-            case BOOK_SEARCH -> MenuOption.BOOK_SEARCH.display(inventory, userType);
+            case BOOK_SEARCH -> {
+                BookSearchMenu bookSearchMenu = (BookSearchMenu) MenuOption.BOOK_SEARCH.getMenu();
+                bookSearchMenu.setCart(cart);
+                bookSearchMenu.display(inventory, userType);
+            }
             case VIEW_INVENTORY -> {
                 ViewInventoryMenu viewInventoryMenu = (ViewInventoryMenu) MenuOption.VIEW_INVENTORY.getMenu();
                 viewInventoryMenu.setCart(cart);
