@@ -16,7 +16,7 @@ public class RemoveBookMenu implements ProgramMenu {
                     getInventoryStrings(inventory)
             );
 
-            if (removalChoice == MenuOption.DONE_DISPLAYING) {
+            if (removalChoice == MenuUtil.DONE_DISPLAYING) {
                 done = true;
             }
             else {
@@ -43,7 +43,7 @@ public class RemoveBookMenu implements ProgramMenu {
                 "No"
         );
 
-        if (removalConfirmation == MenuOption.DONE_DISPLAYING) {
+        if (removalConfirmation == MenuUtil.DONE_DISPLAYING) {
             return true;
         }
         else if (removalConfirmation == 1) {

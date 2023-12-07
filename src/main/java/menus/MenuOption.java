@@ -2,7 +2,7 @@ package main.java.menus;
 
 import main.java.objects.Inventory;
 
-public enum MenuOption {
+public enum MenuOption implements PromptSelection {
     ADMIN(new AdminMenu(), "Admin"),
     CUSTOMER(new CustomerMenu(), "Customer"),
     BOOK_SEARCH(new BookSearchMenu(), "Book Search"),
@@ -11,7 +11,6 @@ public enum MenuOption {
     REMOVE_BOOK(new RemoveBookMenu(), "Remove Book"),
     CHECKOUT(new CheckoutMenu(), "Proceed to Checkout");
 
-    public static final int DONE_DISPLAYING = -1;
     private final ProgramMenu menu;
     private final String label;
 

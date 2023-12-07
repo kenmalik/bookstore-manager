@@ -26,17 +26,20 @@ public class Main {
         boolean done = false;
         while (!done) {
             System.out.println();
-
-            int userType = MenuUtil.choicePrompt(
+            MenuOption userType = (MenuOption) MenuUtil.choicePrompt(
                     "Choose User Type:",
-                    MenuOption.ADMIN.getLabel(),
-                    MenuOption.CUSTOMER.getLabel()
+                    MenuOption.ADMIN,
+                    MenuOption.CUSTOMER
             );
 
-            switch (userType) {
-                case 1 -> MenuOption.ADMIN.display(inventory, UserType.ADMIN);
-                case 2 -> MenuOption.CUSTOMER.display(inventory, UserType.CUSTOMER);
-                case MenuOption.DONE_DISPLAYING -> done = true;
+            if (userType == null) {
+                done = true;
+            }
+            else if (userType == MenuOption.ADMIN) {
+                MenuOption.ADMIN.display(inventory, UserType.ADMIN);
+            }
+            else if (userType == MenuOption.CUSTOMER) {
+                MenuOption.CUSTOMER.display(inventory, UserType.CUSTOMER);
             }
         }
     }
@@ -44,7 +47,7 @@ public class Main {
     private static Inventory readInventoryCsv() {
         LOGGER.log(Level.INFO, "Loading testInventory.dat...\n");
 
-        // Reading csv to testInventory.dat test
+        // Reading csv to inventory
         File inFile = new File("src\\main\\resources\\inventory.dat");
         try (Scanner in = new Scanner(inFile)) {
             return new Inventory(in);

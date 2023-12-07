@@ -23,7 +23,7 @@ public class InventoryCsvTest {
         System.out.println("Default Inventory CSV Test:");
         System.out.println(emptyInventory.toCsv());
 
-        // Filled testInventory.dat to csv test
+        // Filled inventory to csv test
         Inventory filledInventory = new Inventory();
         filledInventory.add(
                 new Book("Atomic Habits", "James Clear", "Educational", 27.00, 1)
@@ -43,7 +43,7 @@ public class InventoryCsvTest {
             System.out.println(fileNotFoundException.getMessage());
         }
 
-        // Reading csv to testInventory.dat test
+        // Reading csv to inventory test
         File inFile = new File("src\\test\\resources\\testInventory.dat");
         try (Scanner in = new Scanner(inFile)) {
             Inventory csvRead = new Inventory(in);

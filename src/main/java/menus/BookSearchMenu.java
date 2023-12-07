@@ -4,19 +4,12 @@ import main.java.objects.Book;
 import main.java.objects.Inventory;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class BookSearchMenu implements ProgramMenu {
     private static final String NONE_FOUND_MESSAGE = "No matches found.";
 
-    private enum SearchType {
-        TITLE(1), AUTHOR(2), GENRE(3), PRICE(4);
-        private final int index;
-
-        SearchType(int index) {
-            this.index = index;
-        }
-
+    private enum SearchType implements  PromptSelection {
+        TITLE, AUTHOR, GENRE, PRICE;
         public String getLabel() {
             return name().charAt(0) + name().substring(1).toLowerCase();
         }
@@ -29,32 +22,42 @@ public class BookSearchMenu implements ProgramMenu {
         while (!done) {
             System.out.println();
 
-            int searchType = MenuUtil.choicePrompt(
+            SearchType searchType = (SearchType) MenuUtil.choicePrompt(
                     "Search By:",
-                    SearchType.TITLE.getLabel(),
-                    SearchType.AUTHOR.getLabel(),
-                    SearchType.GENRE.getLabel(),
-                    SearchType.PRICE.getLabel()
+                    SearchType.TITLE,
+                    SearchType.AUTHOR,
+                    SearchType.GENRE,
+                    SearchType.PRICE
             );
 
-            if (searchType == SearchType.TITLE.index) {
+            if (searchType == null) {
+                done = true;
+            }
+            else {
+                performSearch(inventory, searchType);
+            }
+
+        }
+    }
+
+
+    private void performSearch(Inventory inventory, SearchType searchType) {
+        switch (searchType) {
+            case TITLE -> {
                 System.out.println();
                 titleSearch(inventory);
             }
-            else if (searchType == SearchType.AUTHOR.index) {
+            case AUTHOR -> {
                 System.out.println();
                 authorSearch(inventory);
             }
-            else if (searchType == SearchType.GENRE.index) {
+            case GENRE -> {
                 System.out.println();
                 genreSearch(inventory);
             }
-            else if (searchType == SearchType.PRICE.index) {
+            case PRICE -> {
                 System.out.println();
                 priceSearch(inventory);
-            }
-            else {
-                done = true;
             }
         }
     }

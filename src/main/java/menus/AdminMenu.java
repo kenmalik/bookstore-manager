@@ -9,21 +9,29 @@ public class AdminMenu implements ProgramMenu {
         while (!done) {
             System.out.println("\n--- ADMIN MENU ---");
 
-            int actionChoice = MenuUtil.choicePrompt(
+            MenuOption actionChoice = (MenuOption) MenuUtil.choicePrompt(
                     "Choose Action:",
-                    MenuOption.BOOK_SEARCH.getLabel(),
-                    MenuOption.ADD_BOOK.getLabel(),
-                    MenuOption.REMOVE_BOOK.getLabel(),
-                    MenuOption.VIEW_INVENTORY.getLabel()
+                    MenuOption.BOOK_SEARCH,
+                    MenuOption.ADD_BOOK,
+                    MenuOption.REMOVE_BOOK,
+                    MenuOption.VIEW_INVENTORY
             );
 
-            switch (actionChoice) {
-                case 1 -> MenuOption.BOOK_SEARCH.display(inventory, UserType.ADMIN);
-                case 2 -> MenuOption.ADD_BOOK.display(inventory, UserType.ADMIN);
-                case 3 -> MenuOption.REMOVE_BOOK.display(inventory, UserType.ADMIN);
-                case 4 -> MenuOption.VIEW_INVENTORY.display(inventory, UserType.ADMIN);
-                case MenuOption.DONE_DISPLAYING -> done = true;
+            if (actionChoice == null) {
+                done = true;
             }
+            else {
+                performAction(inventory, actionChoice);
+            }
+        }
+    }
+
+    private static void performAction(Inventory inventory, MenuOption actionChoice) {
+        switch (actionChoice) {
+            case BOOK_SEARCH -> MenuOption.BOOK_SEARCH.display(inventory, UserType.ADMIN);
+            case ADD_BOOK -> MenuOption.ADD_BOOK.display(inventory, UserType.ADMIN);
+            case REMOVE_BOOK -> MenuOption.REMOVE_BOOK.display(inventory, UserType.ADMIN);
+            case VIEW_INVENTORY -> MenuOption.VIEW_INVENTORY.display(inventory, UserType.ADMIN);
         }
     }
 }

@@ -3,6 +3,15 @@ package main.java.menus;
 import main.java.objects.*;
 
 public class CheckoutMenu implements ProgramMenu {
+    private enum CheckoutOption implements PromptSelection {
+        VIEW_CART, GENERATE_INVOICE;
+
+        @Override
+        public String getLabel() {
+            return (name().charAt(0) + name().substring(1).toLowerCase()).replace("_", " ");
+        }
+    }
+
     private ShoppingCart cart;
     private Customer customer;
     private Payment payment;
@@ -14,23 +23,25 @@ public class CheckoutMenu implements ProgramMenu {
         boolean done = false;
         while (!done) {
             System.out.println();
-            int actionChoice = MenuUtil.choicePrompt(
+            CheckoutOption actionChoice = (CheckoutOption) MenuUtil.choicePrompt(
                     "Choose Action:",
-                    "View Cart",
-                    "Generate Invoice"
+                    CheckoutOption.VIEW_CART,
+                    CheckoutOption.GENERATE_INVOICE
             );
 
-            switch (actionChoice) {
-                case 1 -> printCart();
-                case 2 -> {
-                    boolean paymentInfoReceived = setPaymentInfo(order);
-                    if (paymentInfoReceived) {
-                        order.setPayment(payment);
-                        System.out.println("\n" + order.generateInvoice());
-                    }
-                    done = true;
+            if (actionChoice == null) {
+                done = true;
+            }
+            else if (actionChoice == CheckoutOption.VIEW_CART) {
+                printCart();
+            }
+            else if (actionChoice == CheckoutOption.GENERATE_INVOICE) {
+                boolean paymentInfoReceived = setPaymentInfo(order);
+                if (paymentInfoReceived) {
+                    order.setPayment(payment);
+                    System.out.println("\n" + order.generateInvoice());
                 }
-                case MenuOption.DONE_DISPLAYING -> done = true;
+                done = true;
             }
         }
     }
@@ -59,7 +70,7 @@ public class CheckoutMenu implements ProgramMenu {
             case 2 -> {
                 return setCardPayment();
             }
-            case MenuOption.DONE_DISPLAYING -> {
+            case MenuUtil.DONE_DISPLAYING -> {
                 return false;
             }
         }
@@ -78,7 +89,7 @@ public class CheckoutMenu implements ProgramMenu {
                     "Yes"
             );
 
-            if (actionChoice == MenuOption.DONE_DISPLAYING) {
+            if (actionChoice == MenuUtil.DONE_DISPLAYING) {
                 return false;
             }
             cashPaid = MenuUtil.getDoubleInput("Input amount of cash paid: ");
@@ -107,7 +118,7 @@ public class CheckoutMenu implements ProgramMenu {
                         "Yes"
                 );
 
-                if (actionChoice == MenuOption.DONE_DISPLAYING) {
+                if (actionChoice == MenuUtil.DONE_DISPLAYING) {
                     done = true;
                 }
             }
