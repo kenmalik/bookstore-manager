@@ -37,7 +37,7 @@ public class ViewInventoryMenu implements ProgramMenu {
         boolean done = false;
         while (!done) {
             System.out.println();
-            Book[] chunk = displayInventoryChunk(inventory, viewStartIdx);
+            Book[] displayChunk = displayInventoryChunk(inventory, viewStartIdx);
             System.out.println();
 
             // Determine display options
@@ -55,12 +55,21 @@ public class ViewInventoryMenu implements ProgramMenu {
                 viewStartIdx -= CHUNK_SIZE;
             }
             else if (actionChoice == ViewAction.ADD_TO_CART) {
-                Book book = (Book) MenuUtil.choicePrompt(
-                        "\nSelect book: ",
-                        chunk
-                );
-                cart.add(book);
+                addBookToCartFrom(displayChunk);
             }
+        }
+    }
+
+    private void addBookToCartFrom(Book[] chunk) {
+        Book book = (Book) MenuUtil.choicePrompt(
+                "\nSelect book: ",
+                chunk
+        );
+        if (!cart.getCart().contains(book)) {
+            cart.add(book);
+        }
+        else {
+            System.out.println("\nBook is already in cart.");
         }
     }
 
