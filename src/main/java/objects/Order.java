@@ -28,9 +28,13 @@ public class Order {
      * @param customer the customer who is making the purchase.
      * @param shoppingCart the customer's shopping cart.
      */
-    public Order(Customer customer, ShoppingCart shoppingCart, Payment payment) {
+    public Order(Customer customer, ShoppingCart shoppingCart) {
         this.customer = customer;
         order = shoppingCart.getCart();
+    }
+
+
+    public void setPayment(Payment payment) {
         this.payment = payment;
     }
 
@@ -40,9 +44,9 @@ public class Order {
      * @return the invoice formatted as a string.
      */
     public String generateInvoice() {
-        StringBuilder output = new StringBuilder();
+        StringBuilder output = new StringBuilder("--- INVOICE ---\n");
 
-        output.append(String.format("Customer: %s\n", customer.getName()));
+        output.append(String.format("\nCustomer: %s\n", customer.getName()));
 
         output.append("\nItems Purchased:\n");
         for (Book book : order) {
@@ -52,8 +56,13 @@ public class Order {
         }
         output.append(String.format("\nTotal: $%.2f", getTotalCost()));
 
-        output.append(String.format("\nPayment Type: %s (%s)", payment.getPaymentType(), payment.getCardType()));
-        output.append(String.format("\nCard Number: %s", payment.getCensoredCardNumber()));
+        output.append(String.format("\nPayment Type: %s", payment.getPaymentType()));
+        if (payment.getPaymentType() == Payment.PaymentType.CARD) {
+            output.append(String.format(" (%s)", payment.getCardType().toString().replace("_", " ")));
+            output.append(String.format("\nCard Number: %s", payment.getCensoredCardNumber()));
+        }
+
+        output.append("\n\n---------------");
 
         return output.toString();
     }

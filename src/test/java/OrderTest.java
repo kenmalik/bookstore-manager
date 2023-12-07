@@ -21,8 +21,8 @@ public class OrderTest {
 
         // Initialize test payment
         Payment payment = new Payment("612341234", "1224");
-
-        Order order = new Order(customer, cart, payment);
+        Order order = new Order(customer, cart);
+        order.setPayment(payment);
         System.out.println(order.generateInvoice());
     }
 }
