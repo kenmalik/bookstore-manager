@@ -3,50 +3,40 @@ package main.java.menus;
 import main.java.objects.Book;
 import main.java.objects.Inventory;
 
-import java.util.ArrayList;
-
 public class RemoveBookMenu implements ProgramMenu {
     @Override
     public void display(Inventory inventory, UserType userType) {
         boolean done = false;
         while (!done) {
             System.out.println();
-            int removalChoice = MenuUtil.choicePrompt(
+            Book removalChoice = (Book) MenuUtil.choicePrompt(
                     "Choose book to remove:",
-                    getInventoryStrings(inventory)
+                    inventory.getInventory().toArray(new Book[0])
             );
 
-            if (removalChoice == MenuUtil.DONE_DISPLAYING) {
+            if (removalChoice == null) {
                 done = true;
             }
             else {
                 System.out.println();
-                done = confirmRemoval(inventory, inventory.getInventory().get(removalChoice - 1));
+                done = confirmRemoval(inventory, removalChoice);
             }
         }
     }
 
 
-    private String[] getInventoryStrings(Inventory inventory) {
-        ArrayList<String> namesAndAuthors = new ArrayList<>();
-        for (Book book : inventory.getInventory()) {
-            namesAndAuthors.add(book.toString());
-        }
-        return namesAndAuthors.toArray(new String[0]);
-    }
-
-
     private boolean confirmRemoval(Inventory inventory, Book toRemove) {
-        int removalConfirmation = MenuUtil.choicePrompt(
+        PromptSelection.StandardOption removalConfirmation = (PromptSelection.StandardOption) MenuUtil.choicePrompt(
                 "Confirm Removal:\n" + toRemove,
-                "Yes",
-                "No"
+                PromptSelection.StandardOption.YES,
+                PromptSelection.StandardOption.NO
         );
 
-        if (removalConfirmation == MenuUtil.DONE_DISPLAYING) {
+
+        if (removalConfirmation == null) {
             return true;
         }
-        else if (removalConfirmation == 1) {
+        else if (removalConfirmation == PromptSelection.StandardOption.YES) {
             inventory.remove(toRemove);
             return true;
         }

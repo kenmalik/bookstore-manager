@@ -1,6 +1,12 @@
 package main.java.menus;
 
 public interface PromptSelection {
-    PromptSelection QUIT = null;
+    enum StandardOption implements PromptSelection {
+        YES, NO, QUIT;
+        public String getLabel() {
+            return name().charAt(0) + name().substring(1).toLowerCase();
+        }
+    }
+
     String getLabel();
 }

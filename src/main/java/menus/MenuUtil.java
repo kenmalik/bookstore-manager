@@ -3,43 +3,6 @@ package main.java.menus;
 import java.util.Scanner;
 
 public class MenuUtil {
-    public static final int DONE_DISPLAYING = -1;
-    public enum StandardOption implements PromptSelection {
-        YES, NO, QUIT;
-        public String getLabel() {
-            return name().charAt(0) + name().substring(1).toLowerCase();
-        }
-    }
-
-
-    public static int choicePrompt(String prompt, String... options) {
-        System.out.println(prompt);
-        printList(true, options);
-        System.out.printf("%d. Quit\n", options.length + 1);
-
-        Scanner in = new Scanner(System.in);
-        while (true) {
-            System.out.print(">>> ");
-            if (in.hasNextInt()) {
-                int input = in.nextInt();
-                if (input == options.length + 1) {
-                    return -1;
-                }
-                else if (input > 0 && input <= options.length) {
-                    return input;
-                }
-                else {
-                    System.out.println("Input out of range.");
-                }
-            }
-            else {
-                System.out.println("Please enter an integer.");
-                in.nextLine();
-            }
-        }
-    }
-
-
     /**
      * Prints a menu of options and returns what the user selects.
      * @param prompt the menu prompt.
@@ -55,7 +18,7 @@ public class MenuUtil {
         }
 
         printList(true, labels);
-        System.out.printf("%d. %s\n", options.length + 1, StandardOption.QUIT.getLabel());
+        System.out.printf("%d. %s\n", options.length + 1, PromptSelection.StandardOption.QUIT.getLabel());
 
         Scanner in = new Scanner(System.in);
         while (true) {

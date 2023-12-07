@@ -57,24 +57,27 @@ public class CheckoutMenu implements ProgramMenu {
 
     private boolean setPaymentInfo(Order order) {
         System.out.println();
-        int paymentType = MenuUtil.choicePrompt(
+        Payment.PaymentType paymentType = (Payment.PaymentType) MenuUtil.choicePrompt(
                 "Enter Payment Type:",
-                "Cash",
-                "Card"
+                Payment.PaymentType.CASH,
+                Payment.PaymentType.CARD
         );
 
+        if (paymentType == null) {
+            return false;
+        }
+
         switch (paymentType) {
-            case 1 -> {
+            case CASH -> {
                 return setCashPayment(order);
             }
-            case 2 -> {
+            case CARD -> {
                 return setCardPayment();
             }
-            case MenuUtil.DONE_DISPLAYING -> {
+            default -> {
                 return false;
             }
         }
-        return false;
     }
 
 
@@ -84,12 +87,12 @@ public class CheckoutMenu implements ProgramMenu {
 
         while (cashPaid - order.getTotalCost() < 0) {
             System.out.println("\nInsufficient cash.");
-            int actionChoice = MenuUtil.choicePrompt(
+            PromptSelection.StandardOption actionChoice = (PromptSelection.StandardOption) MenuUtil.choicePrompt(
                     "Reenter Cash Paid?",
-                    "Yes"
+                    PromptSelection.StandardOption.YES
             );
 
-            if (actionChoice == MenuUtil.DONE_DISPLAYING) {
+            if (actionChoice == null) {
                 return false;
             }
             cashPaid = MenuUtil.getDoubleInput("Input amount of cash paid: ");
@@ -113,12 +116,12 @@ public class CheckoutMenu implements ProgramMenu {
             payment = new Payment(cardNumber, expirationDate);
             if (!payment.isValidCard()) {
                 System.out.println("\nInvalid card.");
-                int actionChoice = MenuUtil.choicePrompt(
+                PromptSelection.StandardOption actionChoice = (PromptSelection.StandardOption) MenuUtil.choicePrompt(
                         "Reenter card info?",
-                        "Yes"
+                        PromptSelection.StandardOption.YES
                 );
 
-                if (actionChoice == MenuUtil.DONE_DISPLAYING) {
+                if (actionChoice == null) {
                     done = true;
                 }
             }

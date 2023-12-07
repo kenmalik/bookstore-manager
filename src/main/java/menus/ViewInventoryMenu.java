@@ -109,7 +109,7 @@ public class ViewInventoryMenu implements ProgramMenu {
         System.out.printf("%-30s%-30s%-30s%-10s%s\n", "Title", "Author", "Genre", "Price", "Availability");
 
         // Print rows
-        Book[] chunk = new Book[CHUNK_SIZE];
+        Book[] chunk = new Book[Math.min(CHUNK_SIZE, inventory.getInventory().size() - startIndex)];
         for (int inventoryIndex = startIndex, chunkIndex = 0;
              inventoryIndex < inventory.getInventory().size() && inventoryIndex < startIndex + CHUNK_SIZE;
              inventoryIndex++, chunkIndex++)
@@ -120,7 +120,9 @@ public class ViewInventoryMenu implements ProgramMenu {
 
         // Print page position
         System.out.printf("Viewing %d-%d (out of %d)\n",
-                startIndex + 1, startIndex + CHUNK_SIZE, inventory.getInventory().size());
+                startIndex + 1,
+                Math.min(startIndex + CHUNK_SIZE, inventory.getInventory().size()),
+                inventory.getInventory().size());
         return chunk;
     }
 

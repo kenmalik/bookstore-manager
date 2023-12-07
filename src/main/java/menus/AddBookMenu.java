@@ -13,16 +13,16 @@ public class AddBookMenu implements ProgramMenu {
 
             // Confirm choices
             System.out.println("\n" + newBook);
-            MenuUtil.StandardOption actionChoice = (MenuUtil.StandardOption) MenuUtil.choicePrompt(
+            PromptSelection.StandardOption actionChoice = (PromptSelection.StandardOption) MenuUtil.choicePrompt(
                     "Confirm input:",
-                    MenuUtil.StandardOption.YES,
-                    MenuUtil.StandardOption.NO
+                    PromptSelection.StandardOption.YES,
+                    PromptSelection.StandardOption.NO
             );
 
             if (actionChoice == null) {
                 done = true;
             }
-            else if (actionChoice == MenuUtil.StandardOption.YES) {
+            else if (actionChoice == PromptSelection.StandardOption.YES) {
                 inventory.add(newBook);
                 done = true;
             }
