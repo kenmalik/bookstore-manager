@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class Order {
     private final ArrayList<Book> order;
     private final Customer customer;
+    private Payment payment;
 
 
     /**
@@ -18,6 +19,7 @@ public class Order {
     public Order() {
         this.order = new ArrayList<>();
         this.customer = new Customer();
+        this.payment = new Payment();
     }
 
 
@@ -26,9 +28,10 @@ public class Order {
      * @param customer the customer who is making the purchase.
      * @param shoppingCart the customer's shopping cart.
      */
-    public Order(Customer customer, ShoppingCart shoppingCart) {
+    public Order(Customer customer, ShoppingCart shoppingCart, Payment payment) {
         this.customer = customer;
         order = shoppingCart.getCart();
+        this.payment = payment;
     }
 
 
@@ -47,8 +50,10 @@ public class Order {
                     + String.format(".$%.2f", book.getPrice());
             output.append(line).append("\n");
         }
-
         output.append(String.format("\nTotal: $%.2f", getTotalCost()));
+
+        output.append(String.format("\nPayment Type: %s (%s)", payment.getPaymentType(), payment.getCardType()));
+        output.append(String.format("\nCard Number: %s", payment.getCensoredCardNumber()));
 
         return output.toString();
     }

@@ -1,9 +1,6 @@
 package main.java.menus;
 
-import main.java.objects.Customer;
-import main.java.objects.Inventory;
-import main.java.objects.Order;
-import main.java.objects.ShoppingCart;
+import main.java.objects.*;
 
 public class CheckoutMenu implements ProgramMenu {
     private ShoppingCart cart;
@@ -11,7 +8,7 @@ public class CheckoutMenu implements ProgramMenu {
 
     @Override
     public void display(Inventory inventory, UserType userType) {
-        Order order = new Order(customer, cart);
+        Order order = new Order(customer, cart, new Payment());
 
         boolean done = false;
         while (!done) {

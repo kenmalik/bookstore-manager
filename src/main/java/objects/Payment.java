@@ -4,7 +4,7 @@ package main.java.objects;
  * A class that provides functionality for payment validation and processing.
  */
 public class Payment {
-    private enum PaymentType { CARD, CASH }
+    public enum PaymentType { CARD, CASH }
 
     /**
      * An enumeration that represents a credit/debit card type.
@@ -18,7 +18,7 @@ public class Payment {
     }
 
     private final PaymentType paymentType;
-    private final Order order;
+
 
     // For cards
     private CardType cardType;
@@ -31,27 +31,29 @@ public class Payment {
 
     public Payment() {
         paymentType = null;
-        order = new Order();
         cardType = null;
         cardNumber = "";
         cashPaid = -1;
     }
 
 
-    public Payment(Order order, String cardNumber) {
-        this.order = order;
+    public Payment(String cardNumber, String expirationDate) {
         paymentType = PaymentType.CARD;
         this.cardNumber = cardNumber;
+        cardType = CardType.VISA;
         cashPaid = -1;
     }
 
 
-    public Payment(Order order, double cashPaid) {
-        this.order = order;
+    public Payment(double cashPaid) {
         paymentType = PaymentType.CASH;
         this.cashPaid = cashPaid;
     }
 
+
+    public PaymentType getPaymentType() {
+        return paymentType;
+    }
 
     /**
      * (If payment type is card) returns the type of card used.
@@ -76,7 +78,8 @@ public class Payment {
      * @return the censored card number.
      */
     public String getCensoredCardNumber() {
-        return "";
+        return "X".repeat(cardNumber.length() - 4)
+                +  cardNumber.substring(cardNumber.length() - 4);
     }
 
 
@@ -136,7 +139,7 @@ public class Payment {
      * (If payment type is cash) returns whether the cash provided was adequate.
      * @return whether the cash provided was adequate.
      */
-    public double validateCash() {
-        return cashPaid - order.getTotalCost();
+    public double validateCash(double total) {
+        return cashPaid - total;
     }
 }
