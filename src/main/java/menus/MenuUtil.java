@@ -58,4 +58,46 @@ public class MenuUtil {
         int padCount = size - message.length();
         return message + String.valueOf(padCharacter).repeat(Math.max(0, padCount));
     }
+
+    public static double getDoubleInput(String message) {
+        Scanner in = new Scanner(System.in);
+
+        boolean doubleInputted = false;
+        while (!doubleInputted) {
+            System.out.print(message);
+            if (in.hasNextDouble()) {
+                doubleInputted = true;
+            }
+            else {
+                System.out.println(" ! Please enter a double.");
+                in.nextLine();
+            }
+        }
+
+        return in.nextDouble();
+    }
+
+    public static int getIntInput(String message) {
+        Scanner in = new Scanner(System.in);
+
+        boolean integerInputted = false;
+        while (!integerInputted) {
+            System.out.print(message);
+            if (in.hasNextInt()) {
+                integerInputted = true;
+            }
+            else {
+                System.out.println(" ! Please enter an integer.");
+                in.nextLine();
+            }
+        }
+
+        return in.nextInt();
+    }
+
+    public static String getStringInput(String message) {
+        System.out.print(message);
+        Scanner in = new Scanner(System.in);
+        return in.nextLine();
+    }
 }

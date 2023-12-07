@@ -1,7 +1,8 @@
 package main.java;
 
-import main.java.menus.Menus;
+import main.java.menus.MenuOption;
 import main.java.menus.MenuUtil;
+import main.java.menus.UserType;
 import main.java.objects.Inventory;
 
 import java.io.File;
@@ -28,14 +29,14 @@ public class Main {
 
             int userType = MenuUtil.choicePrompt(
                     "Choose User Type:",
-                    Menus.ADMIN.getLabel(),
-                    Menus.CUSTOMER.getLabel()
+                    MenuOption.ADMIN.getLabel(),
+                    MenuOption.CUSTOMER.getLabel()
             );
 
             switch (userType) {
-                case 1 -> Menus.ADMIN.display(inventory);
-                case 2 -> Menus.CUSTOMER.display(inventory);
-                case Menus.DONE_DISPLAYING -> done = true;
+                case 1 -> MenuOption.ADMIN.display(inventory, UserType.ADMIN);
+                case 2 -> MenuOption.CUSTOMER.display(inventory, UserType.CUSTOMER);
+                case MenuOption.DONE_DISPLAYING -> done = true;
             }
         }
     }

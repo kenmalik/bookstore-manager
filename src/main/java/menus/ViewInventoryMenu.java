@@ -2,9 +2,6 @@ package main.java.menus;
 
 import main.java.objects.Inventory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ViewInventoryMenu implements ProgramMenu {
     private static final int CHUNK_SIZE = 10;
 
@@ -18,7 +15,7 @@ public class ViewInventoryMenu implements ProgramMenu {
     }
 
     @Override
-    public void display(Inventory inventory) {
+    public void display(Inventory inventory, UserType userType) {
         boolean done = false;
 
         int viewStartIdx = 0;
@@ -51,7 +48,7 @@ public class ViewInventoryMenu implements ProgramMenu {
                 case 1 -> {
 
                 }
-                case Menus.DONE_DISPLAYING -> done = true;
+                case MenuOption.DONE_DISPLAYING -> done = true;
             }
         }
     }

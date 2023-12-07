@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class RemoveBookMenu implements ProgramMenu {
     @Override
-    public void display(Inventory inventory) {
+    public void display(Inventory inventory, UserType userType) {
         boolean done = false;
         while (!done) {
             System.out.println();
@@ -16,7 +16,7 @@ public class RemoveBookMenu implements ProgramMenu {
                     getInventoryStrings(inventory)
             );
 
-            if (removalChoice == Menus.DONE_DISPLAYING) {
+            if (removalChoice == MenuOption.DONE_DISPLAYING) {
                 done = true;
             }
             else {
@@ -43,7 +43,7 @@ public class RemoveBookMenu implements ProgramMenu {
                 "No"
         );
 
-        if (removalConfirmation == Menus.DONE_DISPLAYING) {
+        if (removalConfirmation == MenuOption.DONE_DISPLAYING) {
             return true;
         }
         else if (removalConfirmation == 1) {

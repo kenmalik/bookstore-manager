@@ -3,7 +3,7 @@ package main.java.menus;
 import main.java.objects.Inventory;
 
 public class AdminMenu implements ProgramMenu {
-    public void display(Inventory inventory) {
+    public void display(Inventory inventory, UserType userType) {
         boolean done = false;
 
         while (!done) {
@@ -11,18 +11,18 @@ public class AdminMenu implements ProgramMenu {
 
             int actionChoice = MenuUtil.choicePrompt(
                     "Choose Action:",
-                    Menus.BOOK_SEARCH.getLabel(),
-                    Menus.ADD_BOOK.getLabel(),
-                    Menus.REMOVE_BOOK.getLabel(),
-                    Menus.VIEW_INVENTORY.getLabel()
+                    MenuOption.BOOK_SEARCH.getLabel(),
+                    MenuOption.ADD_BOOK.getLabel(),
+                    MenuOption.REMOVE_BOOK.getLabel(),
+                    MenuOption.VIEW_INVENTORY.getLabel()
             );
 
             switch (actionChoice) {
-                case 1 -> Menus.BOOK_SEARCH.display(inventory);
-                case 2 -> Menus.ADD_BOOK.display(inventory);
-                case 3 -> Menus.REMOVE_BOOK.display(inventory);
-                case 4 -> Menus.VIEW_INVENTORY.display(inventory);
-                case Menus.DONE_DISPLAYING -> done = true;
+                case 1 -> MenuOption.BOOK_SEARCH.display(inventory, UserType.ADMIN);
+                case 2 -> MenuOption.ADD_BOOK.display(inventory, UserType.ADMIN);
+                case 3 -> MenuOption.REMOVE_BOOK.display(inventory, UserType.ADMIN);
+                case 4 -> MenuOption.VIEW_INVENTORY.display(inventory, UserType.ADMIN);
+                case MenuOption.DONE_DISPLAYING -> done = true;
             }
         }
     }

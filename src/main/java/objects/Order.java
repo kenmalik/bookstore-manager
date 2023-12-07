@@ -1,5 +1,7 @@
 package main.java.objects;
 
+import main.java.menus.MenuUtil;
+
 import java.util.ArrayList;
 
 /**
@@ -7,7 +9,7 @@ import java.util.ArrayList;
  */
 public class Order {
     private final ArrayList<Book> order;
-    private Customer customer;
+    private final Customer customer;
 
 
     /**
@@ -25,6 +27,7 @@ public class Order {
      * @param shoppingCart the customer's shopping cart.
      */
     public Order(Customer customer, ShoppingCart shoppingCart) {
+        this.customer = customer;
         order = shoppingCart.getCart();
     }
 
@@ -34,7 +37,20 @@ public class Order {
      * @return the invoice formatted as a string.
      */
     public String generateInvoice() {
-        return "";
+        StringBuilder output = new StringBuilder();
+
+        output.append(String.format("Customer: %s\n", customer.getName()));
+
+        output.append("\nItems Purchased:\n");
+        for (Book book : order) {
+            String line = MenuUtil.characterPad(book.getTitle(), 30, '.')
+                    + String.format(".$%.2f", book.getPrice());
+            output.append(line).append("\n");
+        }
+
+        output.append(String.format("\nTotal: $%.2f", getTotalCost()));
+
+        return output.toString();
     }
 
 
