@@ -2,10 +2,13 @@ package main.java.menus;
 
 import main.java.objects.Book;
 import main.java.objects.Inventory;
+import main.java.objects.ShoppingCart;
 
 import java.util.ArrayList;
 
 public class BookSearchMenu implements ProgramMenu {
+    private UserType userType;
+    private ShoppingCart cart;
     private static final String NONE_FOUND_MESSAGE = "No matches found.";
 
     private enum SearchType implements  PromptSelection {
@@ -15,8 +18,10 @@ public class BookSearchMenu implements ProgramMenu {
         }
     }
 
+
     @Override
     public void display(Inventory inventory, UserType userType) {
+        this.userType = userType;
         boolean done = false;
 
         while (!done) {
@@ -63,6 +68,17 @@ public class BookSearchMenu implements ProgramMenu {
     }
 
 
+    enum PostSearchAction implements PromptSelection {
+        ADD_TO_CART("Add a book to cart");
+        private final String label;
+        PostSearchAction(String label) { this.label = label; }
+        @Override
+        public String getLabel() {
+            return label;
+        }
+    }
+
+
     private void titleSearch(Inventory inventory) {
         ArrayList<Book> matches = new ArrayList<>();
         String title = MenuUtil.getStringInput("Input Search Term: ");
@@ -76,8 +92,7 @@ public class BookSearchMenu implements ProgramMenu {
         }
 
         if (bookFound) {
-            System.out.println("\nMatch Found:");
-            printBooks(matches);
+            displayBooks(matches);
         }
         else {
             System.out.println(NONE_FOUND_MESSAGE);
@@ -98,8 +113,7 @@ public class BookSearchMenu implements ProgramMenu {
         }
 
         if (bookFound) {
-            System.out.println("\nMatch Found:");
-            printBooks(matches);
+            displayBooks(matches);
         }
         else {
             System.out.println(NONE_FOUND_MESSAGE);
@@ -120,8 +134,7 @@ public class BookSearchMenu implements ProgramMenu {
         }
 
         if (bookFound) {
-            System.out.println("\nMatch Found:");
-            printBooks(matches);
+            displayBooks(matches);
         }
         else {
             System.out.println(NONE_FOUND_MESSAGE);
@@ -142,7 +155,7 @@ public class BookSearchMenu implements ProgramMenu {
                 validRange = true;
             }
             else {
-                System.out.println(" ! Invalid range");
+                System.out.println("Invalid range");
             }
         }
 
@@ -155,8 +168,7 @@ public class BookSearchMenu implements ProgramMenu {
         }
 
         if (bookFound) {
-            System.out.println("\nMatch Found:");
-            printBooks(matches);
+            displayBooks(matches);
         }
         else {
             System.out.println(NONE_FOUND_MESSAGE);
@@ -167,6 +179,39 @@ public class BookSearchMenu implements ProgramMenu {
     private void printBooks(ArrayList<Book> books) {
         for (Book book : books) {
             System.out.println(book);
+        }
+    }
+
+
+    public void setCart(ShoppingCart cart) {
+        this.cart = cart;
+    }
+
+
+    private void displayBooks(ArrayList<Book> matches) {
+        System.out.println("\nMatch Found:");
+        printBooks(matches);
+
+        if (userType == UserType.CUSTOMER) {
+            PostSearchAction action = (PostSearchAction) MenuUtil.choicePrompt(
+                    "\nChoose Action:",
+                    PostSearchAction.ADD_TO_CART
+            );
+            if (action == PostSearchAction.ADD_TO_CART) {
+                Book bookSelection = (Book) MenuUtil.choicePrompt(
+                        "\nSelect Book:",
+                        matches.toArray(matches.toArray(new Book[0]))
+                );
+                if (!cart.getCart().contains(bookSelection)) {
+                    cart.add(bookSelection);
+                }
+                else {
+                    System.out.println("\nCart already contains book.");
+                }
+            }
+        }
+        else {
+            MenuUtil.choicePrompt("\nDone Viewing?");
         }
     }
 }
