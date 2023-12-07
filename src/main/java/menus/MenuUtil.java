@@ -52,4 +52,10 @@ public class MenuUtil {
             System.out.println(items[i]);
         }
     }
+
+
+    public static String characterPad(String message, int size, char padCharacter) {
+        int padCount = size - message.length();
+        return message + String.valueOf(padCharacter).repeat(Math.max(0, padCount));
+    }
 }

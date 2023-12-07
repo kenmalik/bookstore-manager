@@ -1,5 +1,7 @@
 package main.java.objects;
 
+import main.java.menus.MenuUtil;
+
 import java.util.Objects;
 
 /**
@@ -144,13 +146,11 @@ public class Book {
 
     @Override
     public String toString() {
-        return "main.java.objects.Book{" +
-                "title='" + title + '\'' +
-                ", author='" + author + '\'' +
-                ", genre='" + genre + '\'' +
-                ", price=" + price +
-                ", availability=" + availability +
-                '}';
+        return MenuUtil.characterPad(title, 30, '.')
+                + MenuUtil.characterPad(author, 25, '.')
+                + MenuUtil.characterPad(genre, 25, '.')
+                + MenuUtil.characterPad(String.format("$%.2f", price), 10, '.')
+                + availability + " available";
     }
 
 

@@ -7,7 +7,8 @@ public enum Menus {
     CUSTOMER(new CustomerMenu(), "Customer"),
     BOOK_SEARCH(new BookSearchMenu(), "Book Search"),
     VIEW_INVENTORY(new ViewInventoryMenu(), "View Inventory"),
-    ADD_BOOK(new AddBookMenu(), "Add Book");
+    ADD_BOOK(new AddBookMenu(), "Add Book"),
+    REMOVE_BOOK(new RemoveBookMenu(), "Remove Book");
 
     public static final int DONE_DISPLAYING = -1;
     private final ProgramMenu menu;

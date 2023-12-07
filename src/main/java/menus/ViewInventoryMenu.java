@@ -56,7 +56,7 @@ public class ViewInventoryMenu implements ProgramMenu {
         }
     }
 
-    private static void displayInventoryChunk(Inventory inventory, int startIndex) {
+    public static void displayInventoryChunk(Inventory inventory, int startIndex) {
         for (int i = startIndex; i < inventory.getInventory().size() && i < CHUNK_SIZE; i++) {
             System.out.println(inventory.getInventory().get(i));
         }

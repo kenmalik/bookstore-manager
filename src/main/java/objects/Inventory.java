@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * A class that represents a bookstore testInventory.dat, providing testInventory.dat management and search functionality.
+ * A class that represents a bookstore inventory, providing inventory management and search functionality.
  */
 public class Inventory {
     private final ArrayList<Book> inventory;
 
 
     /**
-     * Constructs an empty testInventory.dat.
+     * Constructs an empty inventory.
      */
     public Inventory() {
         inventory = new ArrayList<>();
@@ -40,8 +40,8 @@ public class Inventory {
 
 
     /**
-     * Returns a reference to the testInventory.dat array list.
-     * @return the testInventory.dat array list.
+     * Returns a reference to the inventory array list.
+     * @return the inventory array list.
      */
     public ArrayList<Book> getInventory() {
         return inventory;
@@ -49,8 +49,8 @@ public class Inventory {
 
 
     /**
-     * Adds a book to testInventory.dat.
-     * @param book the book to add to testInventory.dat.
+     * Adds a book to inventory.
+     * @param book the book to add to inventory.
      */
     public void add(Book book) {
         inventory.add(book);
@@ -58,8 +58,8 @@ public class Inventory {
 
 
     /**
-     * Removes a book from testInventory.dat.
-     * @param book the book to remove from testInventory.dat.
+     * Removes a book from inventory.
+     * @param book the book to remove from inventory.
      */
     public void remove(Book book) {
         inventory.removeIf(aBook -> aBook.equals(book));
@@ -69,14 +69,14 @@ public class Inventory {
     @Override
     public String toString() {
         return "main.java.objects.Inventory{" +
-                "testInventory.dat=" + inventory +
+                "inventory=" + inventory +
                 '}';
     }
 
 
     /**
-     * Creates a string of csv values from the books in testInventory.dat.
-     * @return a string of csv values from the books in testInventory.dat.
+     * Creates a string of csv values from the books in inventory.
+     * @return a string of csv values from the books in inventory.
      */
     public String toCsv() {
         StringBuilder csv = new StringBuilder();
