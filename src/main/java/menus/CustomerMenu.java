@@ -7,30 +7,43 @@ import main.java.objects.ShoppingCart;
 public class CustomerMenu implements ProgramMenu {
     public void display(Inventory inventory, UserType userType) {
         System.out.println();
-        Customer customer = initializeCustomer();
         ShoppingCart cart = new ShoppingCart();
 
         boolean done = false;
         while (!done) {
             System.out.println("\n--- CUSTOMER MENU ---");
 
-            int actionChoice = MenuUtil.choicePrompt(
+            MenuOption actionChoice = (MenuOption) MenuUtil.choicePrompt(
                     "Choose Action:",
-                    MenuOption.BOOK_SEARCH.getLabel(),
-                    MenuOption.VIEW_INVENTORY.getLabel(),
-                    MenuOption.CHECKOUT.getLabel()
+                    MenuOption.BOOK_SEARCH,
+                    MenuOption.VIEW_INVENTORY,
+                    MenuOption.CHECKOUT
             );
+            
+            if (actionChoice == null) {
+                done = true;
+            }
+            else {
+                performAction(actionChoice, userType, inventory, cart);
+            }
+        }
+    }
 
-            switch (actionChoice) {
-                case 1 -> MenuOption.BOOK_SEARCH.display(inventory, userType);
-                case 2 -> MenuOption.VIEW_INVENTORY.display(inventory, userType);
-                case 3 -> {
-                    CheckoutMenu checkoutMenu = (CheckoutMenu) MenuOption.CHECKOUT.getMenu();
-                    checkoutMenu.setCustomer(customer);
-                    checkoutMenu.setCart(cart);
-                    checkoutMenu.display(inventory, userType);
-                }
-                case MenuOption.DONE_DISPLAYING -> done = true;
+    private void performAction(MenuOption actionChoice, UserType userType, Inventory inventory, ShoppingCart cart) {
+        switch (actionChoice) {
+            case BOOK_SEARCH -> MenuOption.BOOK_SEARCH.display(inventory, userType);
+            case VIEW_INVENTORY -> {
+                ViewInventoryMenu viewInventoryMenu = (ViewInventoryMenu) MenuOption.VIEW_INVENTORY.getMenu();
+                viewInventoryMenu.setCart(cart);
+                viewInventoryMenu.display(inventory, userType);
+            }
+            case CHECKOUT -> {
+                System.out.println();
+                Customer customer = initializeCustomer();
+                CheckoutMenu checkoutMenu = (CheckoutMenu) MenuOption.CHECKOUT.getMenu();
+                checkoutMenu.setCustomer(customer);
+                checkoutMenu.setCart(cart);
+                checkoutMenu.display(inventory, userType);
             }
         }
     }

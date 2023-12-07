@@ -4,15 +4,21 @@ import java.util.Scanner;
 
 public class MenuUtil {
     /**
-     * Prints a menu of options and returns what the user inputs.
+     * Prints a menu of options and returns what the user selects.
      * @param prompt the menu prompt.
      * @param options the options available to choose.
-     * @return the integer that the user inputs.
+     * @return the prompt selection that the user chooses.
      */
-    public static int choicePrompt(String prompt, String... options) {
+    public static PromptSelection choicePrompt(String prompt, PromptSelection... options) {
         System.out.println(prompt);
-        printList(true, options);
-        System.out.printf("%d. Quit\n", options.length + 1);
+
+        String[] labels = new String[options.length];
+        for (int i = 0; i < labels.length; i++) {
+            labels[i] = options[i].getLabel();
+        }
+
+        printList(true, labels);
+        System.out.printf("%d. %s\n", options.length + 1, PromptSelection.StandardOption.QUIT.getLabel());
 
         Scanner in = new Scanner(System.in);
         while (true) {
@@ -20,10 +26,10 @@ public class MenuUtil {
             if (in.hasNextInt()) {
                 int input = in.nextInt();
                 if (input == options.length + 1) {
-                    return -1;
+                    return null;
                 }
                 else if (input > 0 && input <= options.length) {
-                    return input;
+                    return options[input - 1];
                 }
                 else {
                     System.out.println("Input out of range.");

@@ -1,13 +1,14 @@
 package main.java.objects;
 
 import main.java.menus.MenuUtil;
+import main.java.menus.PromptSelection;
 
 import java.util.Objects;
 
 /**
  * A class that represents a book in a bookstore, containing the book's information as well as its list price and availability.
  */
-public class Book {
+public class Book implements PromptSelection {
     public static final int ARG_COUNT = 5;
     private String title;
     private String author;
@@ -30,7 +31,7 @@ public class Book {
      * @param author the author of the book.
      * @param genre the genre of the book.
      * @param price the price of the book.
-     * @param availability the amount of copies available in testInventory.dat.
+     * @param availability the amount of copies available in inventory.
      */
     public Book(String title, String author, String genre, double price, int availability) {
         this.title = title;
@@ -147,10 +148,10 @@ public class Book {
     @Override
     public String toString() {
         return MenuUtil.characterPad(title, 30, '.')
-                + MenuUtil.characterPad(author, 25, '.')
-                + MenuUtil.characterPad(genre, 25, '.')
-                + MenuUtil.characterPad(String.format("$%.2f", price), 10, '.')
-                + availability + " available";
+                + MenuUtil.characterPad(author, 30, '.')
+                + MenuUtil.characterPad(genre, 30, '.')
+                + MenuUtil.characterPad(String.format("$%5.2f", price), 10, '.')
+                + String.format("%2d available", availability);
     }
 
 
@@ -163,5 +164,11 @@ public class Book {
           "%s,%s,%s,%.2f,%d",
           title, author, genre, price, availability
         );
+    }
+
+
+    @Override
+    public String getLabel() {
+        return toString();
     }
 }

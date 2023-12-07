@@ -11,19 +11,20 @@ public class AddBookMenu implements ProgramMenu {
             System.out.println();
             Book newBook = createBook();
 
+            // Confirm choices
             System.out.println("\n" + newBook);
-            int actionChoice = MenuUtil.choicePrompt(
+            PromptSelection.StandardOption actionChoice = (PromptSelection.StandardOption) MenuUtil.choicePrompt(
                     "Confirm input:",
-                    "Yes",
-                    "No"
+                    PromptSelection.StandardOption.YES,
+                    PromptSelection.StandardOption.NO
             );
 
-            switch (actionChoice) {
-                case 1 -> {
-                    inventory.add(newBook);
-                    done = true;
-                }
-                case MenuOption.DONE_DISPLAYING -> done = true;
+            if (actionChoice == null) {
+                done = true;
+            }
+            else if (actionChoice == PromptSelection.StandardOption.YES) {
+                inventory.add(newBook);
+                done = true;
             }
         }
     }

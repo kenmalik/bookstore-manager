@@ -1,18 +1,30 @@
 package main.java.objects;
 
+import main.java.menus.PromptSelection;
+
 /**
  * A class that provides functionality for payment validation and processing.
  */
 public class Payment {
-    public enum PaymentType { CARD, CASH }
+    public enum PaymentType implements PromptSelection {
+        CARD, CASH;
+        @Override
+        public String getLabel() {
+            return name().charAt(0) + name().substring(1).toLowerCase();
+        }
+    }
 
     /**
      * An enumeration that represents a credit/debit card type.
      */
-    public enum CardType {
+    public enum CardType implements PromptSelection {
         VISA(4), MASTER_CARD(5), DISCOVER(6);
         private final int firstDigit;
         CardType(int firstDigit) { this.firstDigit = firstDigit; }
+        @Override
+        public String getLabel() {
+            return name().charAt(0) + name().substring(1).toLowerCase();
+        }
     }
 
     private final PaymentType paymentType;
