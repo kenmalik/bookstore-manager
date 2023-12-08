@@ -77,7 +77,7 @@ public class CheckoutMenu implements ProgramMenu {
     private void printCart() {
         System.out.println("\nYour Cart:");
         for (Book book : cart.getCart()) {
-            System.out.println(book);
+            System.out.println(book.toLineDisplay());
         }
     }
 

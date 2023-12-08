@@ -147,11 +147,7 @@ public class Book implements PromptSelection {
 
     @Override
     public String toString() {
-        return MenuUtil.characterPad(title, 30, '.')
-                + MenuUtil.characterPad(author, 30, '.')
-                + MenuUtil.characterPad(genre, 30, '.')
-                + MenuUtil.characterPad(String.format("$%5.2f", price), 10, '.')
-                + String.format("%2d available", availability);
+        return String.format("%s by %s, %s, $%.2f, %d available", title, author, genre, price, availability);
     }
 
 
@@ -164,6 +160,15 @@ public class Book implements PromptSelection {
           "%s,%s,%s,%.2f,%d",
           title, author, genre, price, availability
         );
+    }
+
+
+    public String toLineDisplay() {
+        return MenuUtil.characterPad(title, 30, '.')
+                + MenuUtil.characterPad(author, 30, '.')
+                + MenuUtil.characterPad(genre, 30, '.')
+                + MenuUtil.characterPad(String.format("$%5.2f", price), 10, '.')
+                + String.format("%2d available", availability);
     }
 
 

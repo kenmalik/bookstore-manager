@@ -61,7 +61,7 @@ public class ViewCartMenu implements ProgramMenu {
     private void displayCart() {
         System.out.println("\nYour Cart:");
         for (Book book : cart.getCart()) {
-            System.out.println(book);
+            System.out.println(book.toLineDisplay());
         }
     }
 

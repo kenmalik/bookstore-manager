@@ -156,7 +156,7 @@ public class ViewInventoryMenu implements ProgramMenu {
              inventoryIndex++, chunkIndex++)
         {
             chunk[chunkIndex] = inventory.getInventory().get(inventoryIndex);
-            System.out.println(inventory.getInventory().get(inventoryIndex));
+            System.out.println(inventory.getInventory().get(inventoryIndex).toLineDisplay());
         }
 
         // Print page position

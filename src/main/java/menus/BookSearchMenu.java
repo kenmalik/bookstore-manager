@@ -182,7 +182,7 @@ public class BookSearchMenu implements ProgramMenu {
 
     private void printBooks(ArrayList<Book> books) {
         for (Book book : books) {
-            System.out.println(book);
+            System.out.println(book.toLineDisplay());
         }
     }
 
