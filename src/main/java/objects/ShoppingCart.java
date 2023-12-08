@@ -1,7 +1,5 @@
 package main.java.objects;
 
-import main.java.objects.Book;
-
 import java.util.ArrayList;
 
 /**

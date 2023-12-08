@@ -80,6 +80,8 @@ public class Order {
 
         output.append("\n\n---------------");
 
+        updateBookAvailability();
+
         return output.toString();
     }
 

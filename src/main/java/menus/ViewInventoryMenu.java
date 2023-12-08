@@ -69,11 +69,14 @@ public class ViewInventoryMenu implements ProgramMenu {
                 "\nSelect book: ",
                 chunk
         );
-        if (!cart.getCart().contains(book)) {
-            cart.add(book);
+        if (book != null && book.getAvailability() <= 0) {
+            System.out.println("\nSelected book is sold out.");
+        }
+        else if (cart.getCart().contains(book)) {
+            System.out.println("\nBook is already in cart.");
         }
         else {
-            System.out.println("\nBook is already in cart.");
+            cart.add(book);
         }
     }
 
