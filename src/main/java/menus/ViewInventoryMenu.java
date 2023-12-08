@@ -3,10 +3,7 @@ package main.java.menus;
 import main.java.objects.Book;
 import main.java.objects.Inventory;
 import main.java.objects.ShoppingCart;
-import main.java.utilities.MenuUtil;
-import main.java.utilities.ProgramMenu;
-import main.java.utilities.PromptSelection;
-import main.java.utilities.UserType;
+import main.java.utilities.*;
 
 public class ViewInventoryMenu implements ProgramMenu {
     private ShoppingCart cart;
@@ -14,7 +11,7 @@ public class ViewInventoryMenu implements ProgramMenu {
 
     private enum ViewAction implements PromptSelection {
         NEXT("View next " + CHUNK_SIZE), PREVIOUS("View previous " + CHUNK_SIZE),
-        ADD_TO_CART("Add a book to cart");
+        ADD_TO_CART("Add a book to cart"), EDIT_BOOK("Edit book properties");
         private final String label;
         ViewAction(String label) {
             this.label = label;
@@ -24,10 +21,14 @@ public class ViewInventoryMenu implements ProgramMenu {
             return label;
         }
     }
-    private static final ViewAction[] NONE = new ViewAction[] {};
-    private static final ViewAction[] PREV = new ViewAction[] { ViewAction.PREVIOUS };
-    private static final ViewAction[] NEXT = new ViewAction[] { ViewAction.NEXT };
-    private static final ViewAction[] NEXT_AND_PREV = new ViewAction[] { ViewAction.NEXT, ViewAction.PREVIOUS };
+    // Admin action sets
+    private static final ViewAction[] ADMIN_NONE = new ViewAction[] { ViewAction.EDIT_BOOK,  };
+    private static final ViewAction[] ADMIN_PREV = new ViewAction[] { ViewAction.EDIT_BOOK, ViewAction.PREVIOUS };
+    private static final ViewAction[] ADMIN_NEXT = new ViewAction[] { ViewAction.EDIT_BOOK, ViewAction.NEXT };
+    private static final ViewAction[] ADMIN_NEXT_AND_PREV
+            = new ViewAction[] { ViewAction.EDIT_BOOK, ViewAction.NEXT, ViewAction.PREVIOUS };
+
+    // Customer action sets
     private static final ViewAction[] CUSTOMER_NONE = new ViewAction[] { ViewAction.ADD_TO_CART,  };
     private static final ViewAction[] CUSTOMER_PREV = new ViewAction[] { ViewAction.ADD_TO_CART, ViewAction.PREVIOUS };
     private static final ViewAction[] CUSTOMER_NEXT = new ViewAction[] { ViewAction.ADD_TO_CART, ViewAction.NEXT };
@@ -61,6 +62,9 @@ public class ViewInventoryMenu implements ProgramMenu {
             else if (actionChoice == ViewAction.ADD_TO_CART) {
                 addBookToCartFrom(displayChunk);
             }
+            else if (actionChoice == ViewAction.EDIT_BOOK) {
+                editBookFrom(displayChunk);
+            }
         }
     }
 
@@ -69,7 +73,12 @@ public class ViewInventoryMenu implements ProgramMenu {
                 "\nSelect book: ",
                 chunk
         );
-        if (book != null && book.getAvailability() <= 0) {
+
+        if (book == null) {
+            return;
+        }
+
+        if (book.getAvailability() <= 0) {
             System.out.println("\nSelected book is sold out.");
         }
         else if (cart.getCart().contains(book)) {
@@ -77,6 +86,22 @@ public class ViewInventoryMenu implements ProgramMenu {
         }
         else {
             cart.add(book);
+        }
+    }
+
+
+    private void editBookFrom(Book[] chunk) {
+        Book book = (Book) MenuUtil.choicePrompt(
+                "\nSelect Book to Edit:",
+                chunk
+        );
+        if (book == null) {
+            return;
+        }
+
+        boolean doneEditing = false;
+        while (!doneEditing) {
+            doneEditing = MenuUtil.makeBookEdit(book);
         }
     }
 
@@ -90,7 +115,7 @@ public class ViewInventoryMenu implements ProgramMenu {
                 availableActions = CUSTOMER_NONE;
             }
             else {
-                availableActions = NONE;
+                availableActions = ADMIN_NONE;
             }
         }
         else if (noneAhead) {
@@ -98,7 +123,7 @@ public class ViewInventoryMenu implements ProgramMenu {
                 availableActions = CUSTOMER_PREV;
             }
             else {
-                availableActions = PREV;
+                availableActions = ADMIN_PREV;
             }
         }
         else if (noneBehind) {
@@ -106,7 +131,7 @@ public class ViewInventoryMenu implements ProgramMenu {
                 availableActions = CUSTOMER_NEXT;
             }
             else {
-                availableActions = NEXT;
+                availableActions = ADMIN_NEXT;
             }
         }
         else {
@@ -114,7 +139,7 @@ public class ViewInventoryMenu implements ProgramMenu {
                 availableActions = CUSTOMER_NEXT_AND_PREV;
             }
             else {
-                availableActions = NEXT_AND_PREV;
+                availableActions = ADMIN_NEXT_AND_PREV;
             }
         }
         return availableActions;

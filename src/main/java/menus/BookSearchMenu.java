@@ -73,7 +73,7 @@ public class BookSearchMenu implements ProgramMenu {
 
 
     enum PostSearchAction implements PromptSelection {
-        ADD_TO_CART("Add a book to cart");
+        ADD_TO_CART("Add a book to cart"), EDIT_BOOK("Edit a book");
         private final String label;
         PostSearchAction(String label) { this.label = label; }
         @Override
@@ -202,23 +202,38 @@ public class BookSearchMenu implements ProgramMenu {
                     PostSearchAction.ADD_TO_CART
             );
             if (action == PostSearchAction.ADD_TO_CART) {
-                Book bookSelection = (Book) MenuUtil.choicePrompt(
+                Book book = (Book) MenuUtil.choicePrompt(
                         "\nSelect Book to Add to Cart:",
                         matches.toArray(matches.toArray(new Book[0]))
                 );
-                if (bookSelection != null && bookSelection.getAvailability() <= 0) {
+                if (book != null && book.getAvailability() <= 0) {
                     System.out.println("\nSelected book is sold out.");
                 }
-                else if (cart.getCart().contains(bookSelection)) {
+                else if (cart.getCart().contains(book)) {
                     System.out.println("\nCart already contains book.");
                 }
                 else {
-                    cart.add(bookSelection);
+                    cart.add(book);
                 }
             }
         }
-        else {
-            MenuUtil.choicePrompt("\nDone Viewing?");
+        else if (userType == UserType.ADMIN) {
+            PostSearchAction action = (PostSearchAction) MenuUtil.choicePrompt(
+                    "\nChoose Action:",
+                    PostSearchAction.EDIT_BOOK
+            );
+            if (action == PostSearchAction.EDIT_BOOK) {
+                Book book = (Book) MenuUtil.choicePrompt(
+                        "\nSelect Book to Edit:",
+                        matches.toArray(matches.toArray(new Book[0]))
+                );
+                if (book != null) {
+                    boolean doneEditing = false;
+                    while (!doneEditing) {
+                        doneEditing = MenuUtil.makeBookEdit(book);
+                    }
+                }
+            }
         }
     }
 }

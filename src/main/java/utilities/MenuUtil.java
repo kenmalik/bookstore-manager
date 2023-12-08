@@ -1,5 +1,7 @@
 package main.java.utilities;
 
+import main.java.objects.Book;
+
 import java.util.Scanner;
 
 public class MenuUtil {
@@ -116,5 +118,39 @@ public class MenuUtil {
         }
 
         return input;
+    }
+
+    public static boolean makeBookEdit(Book book) {
+        System.out.println("\n" + book);
+        BookEditOption editSelection = (BookEditOption) choicePrompt(
+                "Choose Property to Edit:",
+                BookEditOption.TITLE,
+                BookEditOption.AUTHOR,
+                BookEditOption.GENRE,
+                BookEditOption.PRICE,
+                BookEditOption.AVAILABILITY
+        );
+
+        if (editSelection == null) {
+            return true;
+        }
+        else {
+            System.out.println();
+            switch (editSelection) {
+                case TITLE -> book.setTitle(getStringInput("Enter new title: "));
+                case AUTHOR -> book.setAuthor(getStringInput("Enter new author: "));
+                case GENRE -> book.setGenre(getStringInput("Enter new genre: "));
+                case PRICE -> book.setPrice(getDoubleInput("Enter new price: $"));
+                case AVAILABILITY -> book.setAvailability(getIntInput("Enter new availability: "));
+            }
+            return false;
+        }
+    }
+
+    private enum BookEditOption implements PromptSelection {
+        TITLE, AUTHOR, GENRE, PRICE, AVAILABILITY;
+        public String getLabel() {
+            return name().charAt(0) + name().substring(1).toLowerCase();
+        }
     }
 }
