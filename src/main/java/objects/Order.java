@@ -64,12 +64,18 @@ public class Order {
                     + String.format(".$%.2f", book.getPrice());
             output.append(line).append("\n");
         }
-        output.append(String.format("\nTotal: $%.2f", getTotalCost()));
+
+        double total = getTotalCost();
+        output.append(String.format("\nTotal: $%.2f", total));
 
         output.append(String.format("\nPayment Type: %s", payment.getPaymentType()));
         if (payment.getPaymentType() == Payment.PaymentType.CARD) {
             output.append(String.format(" (%s)", payment.getCardType().toString().replace("_", " ")));
             output.append(String.format("\nCard Number: %s", payment.getCensoredCardNumber()));
+        }
+        else if (payment.getPaymentType() == Payment.PaymentType.CASH) {
+            output.append(String.format("\nCash Paid: $%.2f", payment.getCashPaid()));
+            output.append(String.format("\nChange Due: $%.2f", payment.getCashPaid() - total));
         }
 
         output.append("\n\n---------------");

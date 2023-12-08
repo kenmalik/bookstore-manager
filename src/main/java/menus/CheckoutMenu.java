@@ -28,6 +28,7 @@ public class CheckoutMenu implements ProgramMenu {
     @Override
     public void display(Inventory inventory, UserType userType) {
         Order order = new Order();
+        order.setCart(cart);
 
         // To determine available actions
         boolean customerInfoSet = false;
@@ -37,6 +38,7 @@ public class CheckoutMenu implements ProgramMenu {
         boolean done = false;
         while (!done) {
             printCart();
+            printCheckBoxes(customerInfoSet, paymentInfoSet);
 
             if (!(customerInfoSet && paymentInfoSet)) {
                 availableActions = SETTERS_ONLY;
@@ -44,6 +46,7 @@ public class CheckoutMenu implements ProgramMenu {
             else {
                 availableActions = ALL_ACTIONS;
             }
+
             Action actionChoice = (Action) MenuUtil.choicePrompt(
                     "\nChoose Action:",
                     availableActions
@@ -53,15 +56,16 @@ public class CheckoutMenu implements ProgramMenu {
                 done = true;
             }
             else if (actionChoice == Action.SET_CUSTOMER_INFO) {
+                System.out.println();
                 customerInfoSet = setCustomerInfo();
             }
             else if (actionChoice == Action.SET_PAYMENT_INFO) {
+                System.out.println();
                 paymentInfoSet = setPaymentInfo(order);
             }
             else if (actionChoice == Action.GENERATE_INVOICE) {
                 order.setCustomer(customer);
                 order.setPayment(payment);
-                order.setCart(cart);
                 System.out.println("\n" + order.generateInvoice());
                 cart.getCart().clear();
                 done = true;
@@ -78,10 +82,20 @@ public class CheckoutMenu implements ProgramMenu {
     }
 
 
+    private void printCheckBoxes(boolean customerInfoSet, boolean paymentInfoSet) {
+        final char COMPLETED = 'X';
+        final char NOT_COMPLETED = ' ';
+
+        System.out.println("\nRequired for checkout:");
+        System.out.printf("[%c] Enter customer information\n", customerInfoSet? COMPLETED : NOT_COMPLETED);
+        System.out.printf("[%c] Enter payment information\n", paymentInfoSet? COMPLETED : NOT_COMPLETED);
+    }
+
+
     private boolean setPaymentInfo(Order order) {
-        System.out.println();
+        System.out.printf("Total: $%.2f\n", order.getTotalCost());
         Payment.PaymentType paymentType = (Payment.PaymentType) MenuUtil.choicePrompt(
-                "Enter Payment Type:",
+                "\nEnter Payment Type:",
                 Payment.PaymentType.CASH,
                 Payment.PaymentType.CARD
         );
@@ -106,12 +120,13 @@ public class CheckoutMenu implements ProgramMenu {
 
     private boolean setCashPayment(Order order) {
         System.out.println();
-        double cashPaid = MenuUtil.getDoubleInput("Input amount of cash paid: ");
+        double totalCost = order.getTotalCost();
+        double cashPaid = MenuUtil.getDoubleInput("Input amount of cash paid: $");
 
-        while (cashPaid - order.getTotalCost() < 0) {
-            System.out.println("\nInsufficient cash.");
+        while (cashPaid - totalCost < 0) {
+            System.out.printf("\nInsufficient cash. $%.2f needed.\n", totalCost - cashPaid);
             PromptSelection.StandardOption actionChoice = (PromptSelection.StandardOption) MenuUtil.choicePrompt(
-                    "Reenter Cash Paid?",
+                    "\nReenter Cash Paid?",
                     PromptSelection.StandardOption.YES
             );
 
