@@ -8,8 +8,8 @@ import java.util.ArrayList;
  * A class that provides order processing and invoice generation functionality.
  */
 public class Order {
-    private final ArrayList<Book> order;
-    private final Customer customer;
+    private ArrayList<Book> order;
+    private Customer customer;
     private Payment payment;
 
 
@@ -39,6 +39,16 @@ public class Order {
     }
 
 
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+
+    public void setCart(ShoppingCart cart) {
+        this.order = cart.getCart();
+    }
+
+
     /**
      * Generates an invoice from the given customer and list of items.
      * @return the invoice formatted as a string.
@@ -54,15 +64,41 @@ public class Order {
                     + String.format(".$%.2f", book.getPrice());
             output.append(line).append("\n");
         }
-        output.append(String.format("\nTotal: $%.2f", getTotalCost()));
+
+        double total = getTotalCost();
+        double totalAfterDiscounts = getTotalCostAfterDiscounts();
+        double discountsAvailable = customer.getDiscountsAvailable();
+        double discountsAvailableAfterPurchase = Math.max(0, discountsAvailable - total);
+        output.append(String.format("\nTotal: $%.2f", total));
+
+        if (discountsAvailable > 0) {
+            output.append(String.format(
+                    """
+
+                            Discounts Available: $%.2f
+                            Total After Discounts: $%.2f
+                            
+                            You have $%.2f in discounts remaining.
+                            Thank you for being a loyal customer!
+                            """,
+                    discountsAvailable, totalAfterDiscounts, discountsAvailableAfterPurchase
+            ));
+        }
+        customer.setDiscountsAvailable(discountsAvailableAfterPurchase);
 
         output.append(String.format("\nPayment Type: %s", payment.getPaymentType()));
         if (payment.getPaymentType() == Payment.PaymentType.CARD) {
             output.append(String.format(" (%s)", payment.getCardType().toString().replace("_", " ")));
             output.append(String.format("\nCard Number: %s", payment.getCensoredCardNumber()));
         }
+        else if (payment.getPaymentType() == Payment.PaymentType.CASH) {
+            output.append(String.format("\nCash Paid: $%.2f", payment.getCashPaid()));
+            output.append(String.format("\nChange Due: $%.2f", payment.getCashPaid() - totalAfterDiscounts));
+        }
 
         output.append("\n\n---------------");
+
+        updateBookAvailability();
 
         return output.toString();
     }
@@ -83,14 +119,14 @@ public class Order {
 
     /**
      * Gets discounts available from customer and applies them to order.
-     * @param originalCost the cost of the order before applying discounts.
      * @return the cost of the order after applying discounts.
      */
-    private double applyDiscounts(double originalCost) {
-        double finalCost = originalCost;
-        finalCost -= customer.getDiscountsAvailable();
-        customer.setDiscountsAvailable(0);
-        return finalCost;
+    public double getTotalCostAfterDiscounts() {
+        double finalCost = getTotalCost();
+        if (customer.getDiscountsAvailable() > 0) {
+            finalCost -= customer.getDiscountsAvailable();
+        }
+        return Math.max(finalCost, 0);
     }
 
 

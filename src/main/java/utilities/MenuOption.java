@@ -10,7 +10,8 @@ public enum MenuOption implements PromptSelection {
     VIEW_INVENTORY(new ViewInventoryMenu(), "View Inventory"),
     ADD_BOOK(new AddBookMenu(), "Add Book"),
     REMOVE_BOOK(new RemoveBookMenu(), "Remove Book"),
-    CHECKOUT(new CheckoutMenu(), "Proceed to Checkout");
+    CHECKOUT(new CheckoutMenu(), "Proceed to Checkout"),
+    VIEW_CART(new ViewCartMenu(), "View Cart");
 
     private final ProgramMenu menu;
     private final String label;

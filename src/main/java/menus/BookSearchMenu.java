@@ -203,14 +203,17 @@ public class BookSearchMenu implements ProgramMenu {
             );
             if (action == PostSearchAction.ADD_TO_CART) {
                 Book bookSelection = (Book) MenuUtil.choicePrompt(
-                        "\nSelect Book:",
+                        "\nSelect Book to Add to Cart:",
                         matches.toArray(matches.toArray(new Book[0]))
                 );
-                if (!cart.getCart().contains(bookSelection)) {
-                    cart.add(bookSelection);
+                if (bookSelection != null && bookSelection.getAvailability() <= 0) {
+                    System.out.println("\nSelected book is sold out.");
+                }
+                else if (cart.getCart().contains(bookSelection)) {
+                    System.out.println("\nCart already contains book.");
                 }
                 else {
-                    System.out.println("\nCart already contains book.");
+                    cart.add(bookSelection);
                 }
             }
         }
