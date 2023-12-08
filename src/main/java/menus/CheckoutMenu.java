@@ -58,14 +58,14 @@ public class CheckoutMenu implements ProgramMenu {
             else if (actionChoice == Action.SET_CUSTOMER_INFO) {
                 System.out.println();
                 customerInfoSet = setCustomerInfo();
+                order.setCustomer(customer);
             }
             else if (actionChoice == Action.SET_PAYMENT_INFO) {
                 System.out.println();
                 paymentInfoSet = setPaymentInfo(order);
+                order.setPayment(payment);
             }
             else if (actionChoice == Action.GENERATE_INVOICE) {
-                order.setCustomer(customer);
-                order.setPayment(payment);
                 System.out.println("\n" + order.generateInvoice());
                 cart.getCart().clear();
                 done = true;
@@ -94,6 +94,7 @@ public class CheckoutMenu implements ProgramMenu {
 
     private boolean setPaymentInfo(Order order) {
         System.out.printf("Total: $%.2f\n", order.getTotalCost());
+        System.out.printf("Total (After Loyalty Discounts): $%.2f\n", order.getTotalCostAfterDiscounts());
         Payment.PaymentType paymentType = (Payment.PaymentType) MenuUtil.choicePrompt(
                 "\nEnter Payment Type:",
                 Payment.PaymentType.CASH,
@@ -120,7 +121,7 @@ public class CheckoutMenu implements ProgramMenu {
 
     private boolean setCashPayment(Order order) {
         System.out.println();
-        double totalCost = order.getTotalCost();
+        double totalCost = order.getTotalCostAfterDiscounts();
         double cashPaid = MenuUtil.getDoubleInput("Input amount of cash paid: $");
 
         while (cashPaid - totalCost < 0) {
@@ -183,7 +184,7 @@ public class CheckoutMenu implements ProgramMenu {
                 MenuUtil.getStringInput("Enter phone number: "),
                 MenuUtil.getStringInput("Enter email: "),
                 MenuUtil.getStringInput("Enter address: "),
-                0
+                MenuUtil.getDoubleInput("Enter discounts available: ")
         );
         return true;
     }

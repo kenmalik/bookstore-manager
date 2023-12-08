@@ -66,7 +66,25 @@ public class Order {
         }
 
         double total = getTotalCost();
+        double totalAfterDiscounts = getTotalCostAfterDiscounts();
+        double discountsAvailable = customer.getDiscountsAvailable();
+        double discountsAvailableAfterPurchase = Math.max(0, discountsAvailable - total);
         output.append(String.format("\nTotal: $%.2f", total));
+
+        if (discountsAvailable > 0) {
+            output.append(String.format(
+                    """
+
+                            Discounts Available: $%.2f
+                            Total After Discounts: $%.2f
+                            
+                            You have $%.2f in discounts remaining.
+                            Thank you for being a loyal customer!
+                            """,
+                    discountsAvailable, totalAfterDiscounts, discountsAvailableAfterPurchase
+            ));
+        }
+        customer.setDiscountsAvailable(discountsAvailableAfterPurchase);
 
         output.append(String.format("\nPayment Type: %s", payment.getPaymentType()));
         if (payment.getPaymentType() == Payment.PaymentType.CARD) {
@@ -75,7 +93,7 @@ public class Order {
         }
         else if (payment.getPaymentType() == Payment.PaymentType.CASH) {
             output.append(String.format("\nCash Paid: $%.2f", payment.getCashPaid()));
-            output.append(String.format("\nChange Due: $%.2f", payment.getCashPaid() - total));
+            output.append(String.format("\nChange Due: $%.2f", payment.getCashPaid() - totalAfterDiscounts));
         }
 
         output.append("\n\n---------------");
@@ -101,14 +119,14 @@ public class Order {
 
     /**
      * Gets discounts available from customer and applies them to order.
-     * @param originalCost the cost of the order before applying discounts.
      * @return the cost of the order after applying discounts.
      */
-    private double applyDiscounts(double originalCost) {
-        double finalCost = originalCost;
-        finalCost -= customer.getDiscountsAvailable();
-        customer.setDiscountsAvailable(0);
-        return finalCost;
+    public double getTotalCostAfterDiscounts() {
+        double finalCost = getTotalCost();
+        if (customer.getDiscountsAvailable() > 0) {
+            finalCost -= customer.getDiscountsAvailable();
+        }
+        return Math.max(finalCost, 0);
     }
 
 
