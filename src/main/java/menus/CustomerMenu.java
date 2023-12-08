@@ -21,7 +21,7 @@ public class CustomerMenu implements ProgramMenu {
                     "Choose Action:",
                     MenuOption.BOOK_SEARCH,
                     MenuOption.VIEW_INVENTORY,
-                    MenuOption.CHECKOUT
+                    MenuOption.VIEW_CART
             );
             
             if (actionChoice == null) {
@@ -45,25 +45,11 @@ public class CustomerMenu implements ProgramMenu {
                 viewInventoryMenu.setCart(cart);
                 viewInventoryMenu.display(inventory, userType);
             }
-            case CHECKOUT -> {
-                System.out.println();
-                Customer customer = initializeCustomer();
-                CheckoutMenu checkoutMenu = (CheckoutMenu) MenuOption.CHECKOUT.getMenu();
-                checkoutMenu.setCustomer(customer);
-                checkoutMenu.setCart(cart);
-                checkoutMenu.display(inventory, userType);
+            case VIEW_CART -> {
+                ViewCartMenu viewCartMenu = (ViewCartMenu) MenuOption.VIEW_CART.getMenu();
+                viewCartMenu.setCart(cart);
+                viewCartMenu.display(inventory, userType);
             }
         }
-    }
-
-
-    private Customer initializeCustomer() {
-        return new Customer(
-                MenuUtil.getStringInput("Enter name: "),
-                MenuUtil.getStringInput("Enter phone number: "),
-                MenuUtil.getStringInput("Enter email: "),
-                MenuUtil.getStringInput("Enter address: "),
-                0
-        );
     }
 }

@@ -11,8 +11,8 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Main {
-    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+public class MainMenu {
+    private static final Logger LOGGER = Logger.getLogger(MainMenu.class.getName());
 
     public static void main(String[] args) {
         // Logger config

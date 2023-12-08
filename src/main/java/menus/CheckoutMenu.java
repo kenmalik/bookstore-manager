@@ -146,4 +146,15 @@ public class CheckoutMenu implements ProgramMenu {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
+
+
+    private Customer initializeCustomer() {
+        return new Customer(
+                MenuUtil.getStringInput("Enter name: "),
+                MenuUtil.getStringInput("Enter phone number: "),
+                MenuUtil.getStringInput("Enter email: "),
+                MenuUtil.getStringInput("Enter address: "),
+                0
+        );
+    }
 }
