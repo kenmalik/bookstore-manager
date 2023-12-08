@@ -7,44 +7,63 @@ import main.java.utilities.PromptSelection;
 import main.java.utilities.UserType;
 
 public class CheckoutMenu implements ProgramMenu {
-    private enum CheckoutOption implements PromptSelection {
-        VIEW_CART, GENERATE_INVOICE;
+    private ShoppingCart cart;
+    private Customer customer;
+    private Payment payment;
+
+    private enum Action implements PromptSelection {
+        SET_CUSTOMER_INFO, SET_PAYMENT_INFO, GENERATE_INVOICE;
 
         @Override
         public String getLabel() {
             return (name().charAt(0) + name().substring(1).toLowerCase()).replace("_", " ");
         }
     }
+    private static final Action[] SETTERS_ONLY
+            = new Action[] { Action.SET_CUSTOMER_INFO, Action.SET_PAYMENT_INFO };
+    private static final Action[] ALL_ACTIONS
+            = new Action[] { Action.SET_CUSTOMER_INFO, Action.SET_PAYMENT_INFO, Action.GENERATE_INVOICE };
 
-    private ShoppingCart cart;
-    private Customer customer;
-    private Payment payment;
 
     @Override
     public void display(Inventory inventory, UserType userType) {
-        Order order = new Order(customer, cart);
+        Order order = new Order();
+
+        // To determine available actions
+        boolean customerInfoSet = false;
+        boolean paymentInfoSet = false;
+        Action[] availableActions;
 
         boolean done = false;
         while (!done) {
-            System.out.println();
-            CheckoutOption actionChoice = (CheckoutOption) MenuUtil.choicePrompt(
-                    "Choose Action:",
-                    CheckoutOption.VIEW_CART,
-                    CheckoutOption.GENERATE_INVOICE
+            printCart();
+
+            if (!(customerInfoSet && paymentInfoSet)) {
+                availableActions = SETTERS_ONLY;
+            }
+            else {
+                availableActions = ALL_ACTIONS;
+            }
+            Action actionChoice = (Action) MenuUtil.choicePrompt(
+                    "\nChoose Action:",
+                    availableActions
             );
 
             if (actionChoice == null) {
                 done = true;
             }
-            else if (actionChoice == CheckoutOption.VIEW_CART) {
-                printCart();
+            else if (actionChoice == Action.SET_CUSTOMER_INFO) {
+                customerInfoSet = setCustomerInfo();
             }
-            else if (actionChoice == CheckoutOption.GENERATE_INVOICE) {
-                boolean paymentInfoReceived = setPaymentInfo(order);
-                if (paymentInfoReceived) {
-                    order.setPayment(payment);
-                    System.out.println("\n" + order.generateInvoice());
-                }
+            else if (actionChoice == Action.SET_PAYMENT_INFO) {
+                paymentInfoSet = setPaymentInfo(order);
+            }
+            else if (actionChoice == Action.GENERATE_INVOICE) {
+                order.setCustomer(customer);
+                order.setPayment(payment);
+                order.setCart(cart);
+                System.out.println("\n" + order.generateInvoice());
+                cart.getCart().clear();
                 done = true;
             }
         }
@@ -52,7 +71,7 @@ public class CheckoutMenu implements ProgramMenu {
 
 
     private void printCart() {
-        System.out.println("\nCart:");
+        System.out.println("\nYour Cart:");
         for (Book book : cart.getCart()) {
             System.out.println(book);
         }
@@ -143,18 +162,14 @@ public class CheckoutMenu implements ProgramMenu {
     }
 
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-
-    private Customer initializeCustomer() {
-        return new Customer(
+    private boolean setCustomerInfo() {
+        customer = new Customer(
                 MenuUtil.getStringInput("Enter name: "),
                 MenuUtil.getStringInput("Enter phone number: "),
                 MenuUtil.getStringInput("Enter email: "),
                 MenuUtil.getStringInput("Enter address: "),
                 0
         );
+        return true;
     }
 }

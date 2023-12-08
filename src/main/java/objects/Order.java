@@ -8,8 +8,8 @@ import java.util.ArrayList;
  * A class that provides order processing and invoice generation functionality.
  */
 public class Order {
-    private final ArrayList<Book> order;
-    private final Customer customer;
+    private ArrayList<Book> order;
+    private Customer customer;
     private Payment payment;
 
 
@@ -36,6 +36,16 @@ public class Order {
 
     public void setPayment(Payment payment) {
         this.payment = payment;
+    }
+
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+
+    public void setCart(ShoppingCart cart) {
+        this.order = cart.getCart();
     }
 
 

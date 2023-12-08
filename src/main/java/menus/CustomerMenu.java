@@ -1,6 +1,5 @@
 package main.java.menus;
 
-import main.java.objects.Customer;
 import main.java.objects.Inventory;
 import main.java.objects.ShoppingCart;
 import main.java.utilities.MenuOption;
