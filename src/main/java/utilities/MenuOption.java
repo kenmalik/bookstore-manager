@@ -3,6 +3,9 @@ package main.java.utilities;
 import main.java.menus.*;
 import main.java.objects.Inventory;
 
+/**
+ * An enumeration of the major program menus.
+ */
 public enum MenuOption implements PromptSelection {
     ADMIN(new AdminMenu(), "Admin"),
     CUSTOMER(new CustomerMenu(), "Customer"),
@@ -16,23 +19,35 @@ public enum MenuOption implements PromptSelection {
     private final ProgramMenu menu;
     private final String label;
 
-
     MenuOption(ProgramMenu menu, String label) {
         this.menu = menu;
         this.label = label;
     }
 
-
+    /**
+     * Calls the display method on the associated menu.
+     *
+     * @param inventory the inventory to display.
+     * @param userType  the type of user requesting the display.
+     */
     public void display(Inventory inventory, UserType userType) {
         menu.display(inventory, userType);
     }
 
-
+    /**
+     * Gets the display label associated with the menu.
+     *
+     * @return the display label associated with the menu.
+     */
     public String getLabel() {
         return label;
     }
 
-
+    /**
+     * Returns the menu object.
+     *
+     * @return the menu object.
+     */
     public ProgramMenu getMenu() {
         return menu;
     }

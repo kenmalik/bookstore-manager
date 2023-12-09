@@ -1,8 +1,5 @@
 package main.java.objects;
 
-import main.java.objects.Book;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,7 +9,6 @@ import java.util.Scanner;
 public class Inventory {
     private final ArrayList<Book> inventory;
 
-
     /**
      * Constructs an empty inventory.
      */
@@ -20,7 +16,13 @@ public class Inventory {
         inventory = new ArrayList<>();
     }
 
-
+    /**
+     * Constructs an inventory using an input file scanner.
+     *
+     * @param in the input file scanner to read from.
+     * @throws NumberFormatException     thrown if price or availability cannot be converted from string.
+     * @throws IndexOutOfBoundsException thrown if input line arguments does not match the amount to construct book.
+     */
     public Inventory(Scanner in) throws NumberFormatException, IndexOutOfBoundsException {
         inventory = new ArrayList<>();
         while (in.hasNextLine()) {
@@ -38,33 +40,32 @@ public class Inventory {
         }
     }
 
-
     /**
      * Returns a reference to the inventory array list.
+     *
      * @return the inventory array list.
      */
     public ArrayList<Book> getInventory() {
         return inventory;
     }
 
-
     /**
      * Adds a book to inventory.
+     *
      * @param book the book to add to inventory.
      */
     public void add(Book book) {
         inventory.add(book);
     }
 
-
     /**
      * Removes a book from inventory.
+     *
      * @param book the book to remove from inventory.
      */
     public void remove(Book book) {
         inventory.removeIf(aBook -> aBook.equals(book));
     }
-
 
     @Override
     public String toString() {
@@ -73,9 +74,9 @@ public class Inventory {
                 '}';
     }
 
-
     /**
      * Creates a string of csv values from the books in inventory.
+     *
      * @return a string of csv values from the books in inventory.
      */
     public String toCsv() {

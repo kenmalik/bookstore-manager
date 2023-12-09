@@ -10,18 +10,13 @@ import main.java.utilities.UserType;
 
 import java.util.ArrayList;
 
+/**
+ * A menu to search for books.
+ */
 public class BookSearchMenu implements ProgramMenu {
+    private static final String NONE_FOUND_MESSAGE = "No matches found.";
     private UserType userType;
     private ShoppingCart cart;
-    private static final String NONE_FOUND_MESSAGE = "No matches found.";
-
-    private enum SearchType implements PromptSelection {
-        TITLE, AUTHOR, GENRE, PRICE;
-        public String getLabel() {
-            return name().charAt(0) + name().substring(1).toLowerCase();
-        }
-    }
-
 
     @Override
     public void display(Inventory inventory, UserType userType) {
@@ -41,15 +36,19 @@ public class BookSearchMenu implements ProgramMenu {
 
             if (searchType == null) {
                 done = true;
-            }
-            else {
+            } else {
                 performSearch(inventory, searchType);
             }
 
         }
     }
 
-
+    /**
+     * Calls the appropriate search method determined by a provided search type.
+     *
+     * @param inventory  the inventory to perform the search on.
+     * @param searchType the type of search to perform.
+     */
     private void performSearch(Inventory inventory, SearchType searchType) {
         switch (searchType) {
             case TITLE -> {
@@ -71,18 +70,11 @@ public class BookSearchMenu implements ProgramMenu {
         }
     }
 
-
-    enum PostSearchAction implements PromptSelection {
-        ADD_TO_CART("Add a book to cart"), EDIT_BOOK("Edit a book");
-        private final String label;
-        PostSearchAction(String label) { this.label = label; }
-        @Override
-        public String getLabel() {
-            return label;
-        }
-    }
-
-
+    /**
+     * Search for a book by title.
+     *
+     * @param inventory the inventory to perform the search on.
+     */
     private void titleSearch(Inventory inventory) {
         ArrayList<Book> matches = new ArrayList<>();
         String title = MenuUtil.getStringInput("Input Search Term: ");
@@ -97,13 +89,16 @@ public class BookSearchMenu implements ProgramMenu {
 
         if (bookFound) {
             displayBooks(matches);
-        }
-        else {
+        } else {
             System.out.println(NONE_FOUND_MESSAGE);
         }
     }
 
-
+    /**
+     * Search for a book by author.
+     *
+     * @param inventory the inventory to perform the search on.
+     */
     private void authorSearch(Inventory inventory) {
         ArrayList<Book> matches = new ArrayList<>();
         String author = MenuUtil.getStringInput("Input Search Term: ");
@@ -118,13 +113,16 @@ public class BookSearchMenu implements ProgramMenu {
 
         if (bookFound) {
             displayBooks(matches);
-        }
-        else {
+        } else {
             System.out.println(NONE_FOUND_MESSAGE);
         }
     }
 
-
+    /**
+     * Search for a book by genre.
+     *
+     * @param inventory the inventory to perform the search on.
+     */
     private void genreSearch(Inventory inventory) {
         ArrayList<Book> matches = new ArrayList<>();
         String genre = MenuUtil.getStringInput("Input Search Term: ");
@@ -139,16 +137,20 @@ public class BookSearchMenu implements ProgramMenu {
 
         if (bookFound) {
             displayBooks(matches);
-        }
-        else {
+        } else {
             System.out.println(NONE_FOUND_MESSAGE);
         }
     }
 
-
+    /**
+     * Search for a book by title name.
+     *
+     * @param inventory the inventory to perform the search on.
+     */
     private void priceSearch(Inventory inventory) {
         ArrayList<Book> matches = new ArrayList<>();
 
+        // Get and validate input for price range
         double minPrice = -1;
         double maxPrice = -1;
         boolean validRange = false;
@@ -157,12 +159,12 @@ public class BookSearchMenu implements ProgramMenu {
             maxPrice = MenuUtil.getDoubleInput("Input maximum price: ");
             if (minPrice <= maxPrice && minPrice >= 0 && maxPrice >= 0) {
                 validRange = true;
-            }
-            else {
+            } else {
                 System.out.println("Invalid range");
             }
         }
 
+        // Perform search
         boolean bookFound = false;
         for (Book book : inventory.getInventory()) {
             if (book.getPrice() >= minPrice && book.getPrice() <= maxPrice) {
@@ -173,67 +175,114 @@ public class BookSearchMenu implements ProgramMenu {
 
         if (bookFound) {
             displayBooks(matches);
-        }
-        else {
+        } else {
             System.out.println(NONE_FOUND_MESSAGE);
         }
     }
 
-
-    private void printBooks(ArrayList<Book> books) {
-        for (Book book : books) {
-            System.out.println(book.toLineDisplay());
-        }
-    }
-
-
+    /**
+     * Sets the shopping cart to add books to.
+     *
+     * @param cart the shopping cart to use.
+     */
     public void setCart(ShoppingCart cart) {
         this.cart = cart;
     }
 
-
+    /**
+     * Displays the books that match search conditions and the actions available.
+     *
+     * @param matches the list of books to display and act on.
+     */
     private void displayBooks(ArrayList<Book> matches) {
         System.out.println("\nMatch Found:");
-        printBooks(matches);
+        System.out.println(MenuUtil.lineDisplayFormat(matches));
 
         if (userType == UserType.CUSTOMER) {
-            PostSearchAction action = (PostSearchAction) MenuUtil.choicePrompt(
-                    "\nChoose Action:",
-                    PostSearchAction.ADD_TO_CART
+            promptCustomerActions(matches);
+        } else if (userType == UserType.ADMIN) {
+            promptAdminActions(matches);
+        }
+    }
+
+    /**
+     * Prompts customers with the actions available to them after searching.
+     *
+     * @param matches the list of books that matched the search criteria.
+     */
+    private void promptCustomerActions(ArrayList<Book> matches) {
+        PostSearchAction action = (PostSearchAction) MenuUtil.choicePrompt(
+                "\nChoose Action:",
+                PostSearchAction.ADD_TO_CART
+        );
+        if (action == PostSearchAction.ADD_TO_CART) {
+            Book book = (Book) MenuUtil.choicePrompt(
+                    "\nSelect Book to Add to Cart:",
+                    matches.toArray(matches.toArray(new Book[0]))
             );
-            if (action == PostSearchAction.ADD_TO_CART) {
-                Book book = (Book) MenuUtil.choicePrompt(
-                        "\nSelect Book to Add to Cart:",
-                        matches.toArray(matches.toArray(new Book[0]))
-                );
-                if (book != null && book.getAvailability() <= 0) {
-                    System.out.println("\nSelected book is sold out.");
-                }
-                else if (cart.getCart().contains(book)) {
-                    System.out.println("\nCart already contains book.");
-                }
-                else {
-                    cart.add(book);
+            if (book == null) {
+                return;
+            }
+
+            if (book.getAvailability() <= 0) {
+                System.out.println("\nSelected book is sold out.");
+            } else if (cart.getCart().contains(book)) {
+                System.out.println("\nCart already contains book.");
+            } else {
+                cart.add(book);
+            }
+        }
+    }
+
+    /**
+     * Prompts admins with the actions available to them after searching.
+     *
+     * @param matches the list of books that matched the search criteria.
+     */
+    private void promptAdminActions(ArrayList<Book> matches) {
+        PostSearchAction action = (PostSearchAction) MenuUtil.choicePrompt(
+                "\nChoose Action:",
+                PostSearchAction.EDIT_BOOK
+        );
+        if (action == PostSearchAction.EDIT_BOOK) {
+            Book book = (Book) MenuUtil.choicePrompt(
+                    "\nSelect Book to Edit:",
+                    matches.toArray(matches.toArray(new Book[0]))
+            );
+            if (book != null) {
+                boolean editing = true;
+                while (editing) {
+                    editing = MenuUtil.makeBookEdit(book);
                 }
             }
         }
-        else if (userType == UserType.ADMIN) {
-            PostSearchAction action = (PostSearchAction) MenuUtil.choicePrompt(
-                    "\nChoose Action:",
-                    PostSearchAction.EDIT_BOOK
-            );
-            if (action == PostSearchAction.EDIT_BOOK) {
-                Book book = (Book) MenuUtil.choicePrompt(
-                        "\nSelect Book to Edit:",
-                        matches.toArray(matches.toArray(new Book[0]))
-                );
-                if (book != null) {
-                    boolean doneEditing = false;
-                    while (!doneEditing) {
-                        doneEditing = MenuUtil.makeBookEdit(book);
-                    }
-                }
-            }
+    }
+
+    /**
+     * An enumeration of the possible search types.
+     */
+    private enum SearchType implements PromptSelection {
+        TITLE, AUTHOR, GENRE, PRICE;
+
+        public String getLabel() {
+            return name().charAt(0) + name().substring(1).toLowerCase();
+        }
+    }
+
+    /**
+     * An enumeration of the possible actions after performing a search.
+     */
+    private enum PostSearchAction implements PromptSelection {
+        ADD_TO_CART("Add a book to cart"), EDIT_BOOK("Edit a book");
+        private final String label;
+
+        PostSearchAction(String label) {
+            this.label = label;
+        }
+
+        @Override
+        public String getLabel() {
+            return label;
         }
     }
 }

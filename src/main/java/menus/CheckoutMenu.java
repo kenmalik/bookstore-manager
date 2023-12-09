@@ -6,24 +6,17 @@ import main.java.utilities.ProgramMenu;
 import main.java.utilities.PromptSelection;
 import main.java.utilities.UserType;
 
+/**
+ * A menu to check out an order.
+ */
 public class CheckoutMenu implements ProgramMenu {
+    private static final Action[] SETTERS_ONLY
+            = new Action[]{Action.SET_CUSTOMER_INFO, Action.SET_PAYMENT_INFO};
+    private static final Action[] ALL_ACTIONS
+            = new Action[]{Action.SET_CUSTOMER_INFO, Action.SET_PAYMENT_INFO, Action.GENERATE_INVOICE};
     private ShoppingCart cart;
     private Customer customer;
     private Payment payment;
-
-    private enum Action implements PromptSelection {
-        SET_CUSTOMER_INFO, SET_PAYMENT_INFO, GENERATE_INVOICE;
-
-        @Override
-        public String getLabel() {
-            return (name().charAt(0) + name().substring(1).toLowerCase()).replace("_", " ");
-        }
-    }
-    private static final Action[] SETTERS_ONLY
-            = new Action[] { Action.SET_CUSTOMER_INFO, Action.SET_PAYMENT_INFO };
-    private static final Action[] ALL_ACTIONS
-            = new Action[] { Action.SET_CUSTOMER_INFO, Action.SET_PAYMENT_INFO, Action.GENERATE_INVOICE };
-
 
     @Override
     public void display(Inventory inventory, UserType userType) {
@@ -37,16 +30,11 @@ public class CheckoutMenu implements ProgramMenu {
 
         boolean done = false;
         while (!done) {
-            printCart();
+            System.out.println("\nYour Cart:");
+            System.out.println(MenuUtil.lineDisplayFormat(cart.getCart()));
             printCheckBoxes(customerInfoSet, paymentInfoSet);
 
-            if (!(customerInfoSet && paymentInfoSet)) {
-                availableActions = SETTERS_ONLY;
-            }
-            else {
-                availableActions = ALL_ACTIONS;
-            }
-
+            availableActions = getAvailableActions(customerInfoSet, paymentInfoSet);
             Action actionChoice = (Action) MenuUtil.choicePrompt(
                     "\nChoose Action:",
                     availableActions
@@ -54,18 +42,15 @@ public class CheckoutMenu implements ProgramMenu {
 
             if (actionChoice == null) {
                 done = true;
-            }
-            else if (actionChoice == Action.SET_CUSTOMER_INFO) {
+            } else if (actionChoice == Action.SET_CUSTOMER_INFO) {
                 System.out.println();
                 customerInfoSet = setCustomerInfo();
                 order.setCustomer(customer);
-            }
-            else if (actionChoice == Action.SET_PAYMENT_INFO) {
+            } else if (actionChoice == Action.SET_PAYMENT_INFO) {
                 System.out.println();
                 paymentInfoSet = setPaymentInfo(order);
                 order.setPayment(payment);
-            }
-            else if (actionChoice == Action.GENERATE_INVOICE) {
+            } else if (actionChoice == Action.GENERATE_INVOICE) {
                 System.out.println("\n" + order.generateInvoice());
                 cart.getCart().clear();
                 done = true;
@@ -73,25 +58,43 @@ public class CheckoutMenu implements ProgramMenu {
         }
     }
 
-
-    private void printCart() {
-        System.out.println("\nYour Cart:");
-        for (Book book : cart.getCart()) {
-            System.out.println(book.toLineDisplay());
+    /**
+     * Returns the available actions as determined by whether the customer and payment info are set.
+     * @param customerInfoSet whether the customer info has been set.
+     * @param paymentInfoSet whether the payment info has been set.
+     * @return an array of the actions available.
+     */
+    private Action[] getAvailableActions(boolean customerInfoSet, boolean paymentInfoSet) {
+        Action[] availableActions;
+        if (!(customerInfoSet && paymentInfoSet)) {
+            availableActions = SETTERS_ONLY;
+        } else {
+            availableActions = ALL_ACTIONS;
         }
+        return availableActions;
     }
 
-
+    /**
+     * Prints check boxes that display what actions are needed before generating invoice.
+     *
+     * @param customerInfoSet whether the customer info was inputted.
+     * @param paymentInfoSet  whether the payment info was inputted.
+     */
     private void printCheckBoxes(boolean customerInfoSet, boolean paymentInfoSet) {
         final char COMPLETED = 'X';
         final char NOT_COMPLETED = ' ';
 
         System.out.println("\nRequired for checkout:");
-        System.out.printf("[%c] Enter customer information\n", customerInfoSet? COMPLETED : NOT_COMPLETED);
-        System.out.printf("[%c] Enter payment information\n", paymentInfoSet? COMPLETED : NOT_COMPLETED);
+        System.out.printf("[%c] Enter customer information\n", customerInfoSet ? COMPLETED : NOT_COMPLETED);
+        System.out.printf("[%c] Enter payment information\n", paymentInfoSet ? COMPLETED : NOT_COMPLETED);
     }
 
-
+    /**
+     * Sets the payment info for the order.
+     *
+     * @param order the order that is being paid for.
+     * @return whether the payment info was set.
+     */
     private boolean setPaymentInfo(Order order) {
         System.out.printf("Total: $%.2f\n", order.getTotalCost());
         System.out.printf("Total (After Loyalty Discounts): $%.2f\n", order.getTotalCostAfterDiscounts());
@@ -118,11 +121,15 @@ public class CheckoutMenu implements ProgramMenu {
         }
     }
 
-
+    /**
+     * Prompts the necessary inputs to construct a cash payment and sets the order payment to it.
+     *
+     * @param order the order that is being paid for.
+     * @return whether a cash payment was constructed.
+     */
     private boolean setCashPayment(Order order) {
-        System.out.println();
         double totalCost = order.getTotalCostAfterDiscounts();
-        double cashPaid = MenuUtil.getDoubleInput("Input amount of cash paid: $");
+        double cashPaid = MenuUtil.getDoubleInput("\nInput amount of cash paid: $");
 
         while (cashPaid - totalCost < 0) {
             System.out.printf("\nInsufficient cash. $%.2f needed.\n", totalCost - cashPaid);
@@ -134,14 +141,18 @@ public class CheckoutMenu implements ProgramMenu {
             if (actionChoice == null) {
                 return false;
             }
-            cashPaid = MenuUtil.getDoubleInput("Input amount of cash paid: ");
+            cashPaid = MenuUtil.getDoubleInput("\nInput amount of cash paid: $");
         }
 
         payment = new Payment(cashPaid);
         return true;
     }
 
-
+    /**
+     * Prompts the necessary inputs to construct a card payment and sets the order payment to it.
+     *
+     * @return whether a card payment was constructed.
+     */
     private boolean setCardPayment() {
         boolean done = false;
         while (!done) {
@@ -163,8 +174,7 @@ public class CheckoutMenu implements ProgramMenu {
                 if (actionChoice == null) {
                     done = true;
                 }
-            }
-            else {
+            } else {
                 done = true;
             }
         }
@@ -172,12 +182,20 @@ public class CheckoutMenu implements ProgramMenu {
         return payment.isValidCard();
     }
 
-
+    /**
+     * Sets the cart that the order is to be constructed from.
+     *
+     * @param cart the cart that the order is to be constructed from.
+     */
     public void setCart(ShoppingCart cart) {
         this.cart = cart;
     }
 
-
+    /**
+     * Prompts input to construct a new customer.
+     *
+     * @return whether a customer was constructed.
+     */
     private boolean setCustomerInfo() {
         customer = new Customer(
                 MenuUtil.getStringInput("Enter name: "),
@@ -187,5 +205,17 @@ public class CheckoutMenu implements ProgramMenu {
                 MenuUtil.getDoubleInput("Enter discounts available: ")
         );
         return true;
+    }
+
+    /**
+     * An enumeration of the possible actions in this menu.
+     */
+    private enum Action implements PromptSelection {
+        SET_CUSTOMER_INFO, SET_PAYMENT_INFO, GENERATE_INVOICE;
+
+        @Override
+        public String getLabel() {
+            return (name().charAt(0) + name().substring(1).toLowerCase()).replace("_", " ");
+        }
     }
 }

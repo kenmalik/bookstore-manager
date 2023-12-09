@@ -7,6 +7,9 @@ import main.java.utilities.ProgramMenu;
 import main.java.utilities.PromptSelection;
 import main.java.utilities.UserType;
 
+/**
+ * A menu to add books to inventory.
+ */
 public class AddBookMenu implements ProgramMenu {
     @Override
     public void display(Inventory inventory, UserType userType) {
@@ -25,15 +28,18 @@ public class AddBookMenu implements ProgramMenu {
 
             if (actionChoice == null) {
                 done = true;
-            }
-            else if (actionChoice == PromptSelection.StandardOption.YES) {
+            } else if (actionChoice == PromptSelection.StandardOption.YES) {
                 inventory.add(newBook);
                 done = true;
             }
         }
     }
 
-
+    /**
+     * Prompts input for the construction of a new book object.
+     *
+     * @return the new book object.
+     */
     public Book createBook() {
         return new Book(
                 MenuUtil.getStringInput("Input title of book: "),

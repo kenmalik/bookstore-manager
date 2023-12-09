@@ -7,7 +7,11 @@ import main.java.utilities.MenuUtil;
 import main.java.utilities.ProgramMenu;
 import main.java.utilities.UserType;
 
+/**
+ * The home menu for customer users.
+ */
 public class CustomerMenu implements ProgramMenu {
+    @Override
     public void display(Inventory inventory, UserType userType) {
         System.out.println();
         ShoppingCart cart = new ShoppingCart();
@@ -22,16 +26,23 @@ public class CustomerMenu implements ProgramMenu {
                     MenuOption.VIEW_INVENTORY,
                     MenuOption.VIEW_CART
             );
-            
+
             if (actionChoice == null) {
                 done = true;
-            }
-            else {
+            } else {
                 performAction(actionChoice, userType, inventory, cart);
             }
         }
     }
 
+    /**
+     * Performs an action as determined by the action choice.
+     *
+     * @param actionChoice the chosen action to perform.
+     * @param userType     the type of the user that requested this action.
+     * @param inventory    the inventory to perform actions on.
+     * @param cart         the customer's cart.
+     */
     private void performAction(MenuOption actionChoice, UserType userType, Inventory inventory, ShoppingCart cart) {
         switch (actionChoice) {
             case BOOK_SEARCH -> {
