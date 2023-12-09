@@ -5,6 +5,9 @@ import main.java.objects.Book;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * A collection of prompt and display utilities used throughout the program.
+ */
 public class MenuUtil {
     /**
      * Prints a menu of options and returns what the user selects.

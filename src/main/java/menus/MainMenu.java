@@ -3,6 +3,7 @@ package main.java.menus;
 import main.java.objects.Inventory;
 import main.java.utilities.MenuOption;
 import main.java.utilities.MenuUtil;
+import main.java.utilities.PromptSelection;
 import main.java.utilities.UserType;
 
 import java.io.File;
@@ -19,9 +20,44 @@ public class MainMenu {
      * @param args command line arguments to pass to program. (Not supported)
      */
     public static void main(String[] args) throws FileNotFoundException, IndexOutOfBoundsException, NumberFormatException {
-        Inventory inventory = loadInventory();
+        Inventory inventory = null;
+        boolean validInventory = false;
+        boolean inputtingCustomPath = false;
 
-        boolean done = false;
+        // Attempt default inventory load
+        try {
+            inventory = getInventory("src\\main\\resources\\inventory.dat");
+            validInventory = true;
+        }
+        catch (FileNotFoundException fileNotFoundException) {
+            PromptSelection.StandardOption action = (PromptSelection.StandardOption) MenuUtil.choicePrompt(
+                    "\nDefault inventory file not found. Input another file path?",
+                    PromptSelection.StandardOption.YES
+            );
+            if (action == PromptSelection.StandardOption.YES) {
+                inputtingCustomPath = true;
+            }
+        }
+
+        // Attempt custom path input if default fails
+        while (inputtingCustomPath) {
+            try {
+                inventory = getInventory(MenuUtil.getStringInput("\nEnter path: "));
+                validInventory = true;
+                inputtingCustomPath = false;
+            }
+            catch (FileNotFoundException fileNotFoundException) {
+                PromptSelection.StandardOption action = (PromptSelection.StandardOption) MenuUtil.choicePrompt(
+                        "\nFile not found. Input another file path?",
+                        PromptSelection.StandardOption.YES
+                );
+                if (action != PromptSelection.StandardOption.YES) {
+                    inputtingCustomPath = false;
+                }
+            }
+        }
+
+        boolean done = !validInventory;  // Only do main program loop if valid inventory is constructed
         while (!done) {
             System.out.println("\n--- BOOKSTORE MANAGER ---");
 
@@ -46,10 +82,11 @@ public class MainMenu {
     /**
      * Reads an inventory csv file and loads it into memory.
      *
+     * @param path the path of the inventory file to be loaded.
      * @return the loaded inventory object.
      */
-    private static Inventory loadInventory() throws FileNotFoundException, IndexOutOfBoundsException, NumberFormatException {
-        File inFile = new File("src\\main\\resources\\inventory.dat");
+    private static Inventory getInventory(String path) throws FileNotFoundException, IndexOutOfBoundsException, NumberFormatException {
+        File inFile = new File(path);
         Scanner in = new Scanner(inFile);
         return new Inventory(in);
     }

@@ -10,7 +10,6 @@ public class Customer {
     private String address;
     private double discountsAvailable;
 
-
     /**
      * Constructs a customer with default values.
      */

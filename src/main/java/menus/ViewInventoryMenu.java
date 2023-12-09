@@ -74,7 +74,7 @@ public class ViewInventoryMenu implements ProgramMenu {
      * @param startIndex the index from which the view is starting.
      * @return an array of the books visible in the current chunk.
      */
-    public static Book[] displayInventoryChunk(Inventory inventory, int startIndex) {
+    private Book[] displayInventoryChunk(Inventory inventory, int startIndex) {
         // Print header
         System.out.printf("%-30s%-30s%-30s%-10s%s\n", "Title", "Author", "Genre", "Price", "Availability");
 

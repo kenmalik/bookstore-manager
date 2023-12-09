@@ -40,7 +40,7 @@ public class AddBookMenu implements ProgramMenu {
      *
      * @return the new book object.
      */
-    public Book createBook() {
+    private Book createBook() {
         return new Book(
                 MenuUtil.getStringInput("Input title of book: "),
                 MenuUtil.getStringInput("Input author of book: "),
