@@ -12,7 +12,6 @@ public class Order {
     private Customer customer;
     private Payment payment;
 
-
     /**
      * Constructs an order with an empty cart and customer object.
      */
@@ -22,10 +21,10 @@ public class Order {
         this.payment = new Payment();
     }
 
-
     /**
      * Constructs an order with a given set of data.
-     * @param customer the customer who is making the purchase.
+     *
+     * @param customer     the customer who is making the purchase.
      * @param shoppingCart the customer's shopping cart.
      */
     public Order(Customer customer, ShoppingCart shoppingCart) {
@@ -33,24 +32,36 @@ public class Order {
         order = shoppingCart.getCart();
     }
 
-
+    /**
+     * Sets the payment associated with the order.
+     *
+     * @param payment the payment associated with the order.
+     */
     public void setPayment(Payment payment) {
         this.payment = payment;
     }
 
-
+    /**
+     * Sets the customer associated with the order.
+     *
+     * @param customer the customer associated with the order.
+     */
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 
-
+    /**
+     * Sets the cart associated with the order.
+     *
+     * @param cart the customer associated with the order.
+     */
     public void setCart(ShoppingCart cart) {
         this.order = cart.getCart();
     }
 
-
     /**
      * Generates an invoice from the given customer and list of items.
+     *
      * @return the invoice formatted as a string.
      */
     public String generateInvoice() {
@@ -58,6 +69,7 @@ public class Order {
 
         output.append(String.format("\nCustomer: %s\n", customer.getName()));
 
+        // Add the items purchased to invoice
         output.append("\nItems Purchased:\n");
         for (Book book : order) {
             String line = MenuUtil.characterPad(book.getTitle(), 30, '.')
@@ -65,47 +77,49 @@ public class Order {
             output.append(line).append("\n");
         }
 
+        // Get the necessary information to add price information to invoice
         double total = getTotalCost();
         double totalAfterDiscounts = getTotalCostAfterDiscounts();
         double discountsAvailable = customer.getDiscountsAvailable();
         double discountsAvailableAfterPurchase = Math.max(0, discountsAvailable - total);
         output.append(String.format("\nTotal: $%.2f", total));
 
+        // Add discount-related info to invoice
         if (discountsAvailable > 0) {
             output.append(String.format(
                     """
 
                             Discounts Available: $%.2f
                             Total After Discounts: $%.2f
-                            
+                                                        
                             You have $%.2f in discounts remaining.
                             Thank you for being a loyal customer!
                             """,
                     discountsAvailable, totalAfterDiscounts, discountsAvailableAfterPurchase
             ));
+            customer.setDiscountsAvailable(discountsAvailableAfterPurchase); // Adjust customer's discounts available
         }
-        customer.setDiscountsAvailable(discountsAvailableAfterPurchase);
 
+        // Display payment type and relevant info
         output.append(String.format("\nPayment Type: %s", payment.getPaymentType()));
         if (payment.getPaymentType() == Payment.PaymentType.CARD) {
             output.append(String.format(" (%s)", payment.getCardType().toString().replace("_", " ")));
             output.append(String.format("\nCard Number: %s", payment.getCensoredCardNumber()));
-        }
-        else if (payment.getPaymentType() == Payment.PaymentType.CASH) {
+        } else if (payment.getPaymentType() == Payment.PaymentType.CASH) {
             output.append(String.format("\nCash Paid: $%.2f", payment.getCashPaid()));
             output.append(String.format("\nChange Due: $%.2f", payment.getCashPaid() - totalAfterDiscounts));
         }
 
-        output.append("\n\n---------------");
+        output.append("\n\n---------------");  // Ending divider
 
-        updateBookAvailability();
+        updateBookAvailability();  // Adjust availability of books purchased
 
         return output.toString();
     }
 
-
     /**
      * Gets the total cost of the items in the order.
+     *
      * @return the total cost of the items in the order.
      */
     public double getTotalCost() {
@@ -116,9 +130,9 @@ public class Order {
         return total;
     }
 
-
     /**
      * Gets discounts available from customer and applies them to order.
+     *
      * @return the cost of the order after applying discounts.
      */
     public double getTotalCostAfterDiscounts() {
@@ -128,7 +142,6 @@ public class Order {
         }
         return Math.max(finalCost, 0);
     }
-
 
     /**
      * Updates the availabilities of the books that have been purchased.

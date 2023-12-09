@@ -21,10 +21,11 @@ public class Customer {
 
     /**
      * Constructs a customer with a given set of data.
-     * @param name the customer's name.
-     * @param phoneNumber the customer's phone number.
-     * @param email the customer's email.
-     * @param address the customer's address.
+     *
+     * @param name               the customer's name.
+     * @param phoneNumber        the customer's phone number.
+     * @param email              the customer's email.
+     * @param address            the customer's address.
      * @param discountsAvailable the amount of discounts (in dollars) that the customer has.
      */
     public Customer(String name, String phoneNumber, String email, String address, double discountsAvailable) {
@@ -35,8 +36,10 @@ public class Customer {
         this.discountsAvailable = discountsAvailable;
     }
 
+
     /**
      * Returns the customer's name.
+     *
      * @return the customer's name.
      */
     public String getName() {
@@ -44,39 +47,8 @@ public class Customer {
     }
 
     /**
-     * Returns the customer's phone number.
-     * @return the customer's phone number.
-     */
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    /**
-     * Returns the customer's email.
-     * @return the customer's email.
-     */
-    public String getEmail() {
-        return email;
-    }
-
-    /**
-     * Returns the customer's address.
-     * @return the customer's address.
-     */
-    public String getAddress() {
-        return address;
-    }
-
-    /**
-     * Returns the customer's amount of discounts (in dollars) available.
-     * @return the customer's amount of discounts (in dollars) available.
-     */
-    public double getDiscountsAvailable() {
-        return discountsAvailable;
-    }
-
-    /**
      * Sets the customer's name.
+     *
      * @param name the customer's name.
      */
     public void setName(String name) {
@@ -84,7 +56,17 @@ public class Customer {
     }
 
     /**
+     * Returns the customer's phone number.
+     *
+     * @return the customer's phone number.
+     */
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    /**
      * Sets the customer's phone number.
+     *
      * @param phoneNumber the customer's phone number.
      */
     public void setPhoneNumber(String phoneNumber) {
@@ -92,7 +74,17 @@ public class Customer {
     }
 
     /**
+     * Returns the customer's email.
+     *
+     * @return the customer's email.
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
      * Sets the customer's email.
+     *
      * @param email the customer's email.
      */
     public void setEmail(String email) {
@@ -100,7 +92,17 @@ public class Customer {
     }
 
     /**
+     * Returns the customer's address.
+     *
+     * @return the customer's address.
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
      * Sets the customer's address.
+     *
      * @param address the customer's address.
      */
     public void setAddress(String address) {
@@ -108,13 +110,22 @@ public class Customer {
     }
 
     /**
+     * Returns the customer's amount of discounts (in dollars) available.
+     *
+     * @return the customer's amount of discounts (in dollars) available.
+     */
+    public double getDiscountsAvailable() {
+        return discountsAvailable;
+    }
+
+    /**
      * Sets the customer's discounts available (in dollars).
+     *
      * @param discountsAvailable the customer's discounts available (in dollars).
      */
     public void setDiscountsAvailable(double discountsAvailable) {
         this.discountsAvailable = discountsAvailable;
     }
-
 
     @Override
     public String toString() {

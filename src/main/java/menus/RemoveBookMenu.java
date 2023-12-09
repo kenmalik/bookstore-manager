@@ -7,6 +7,9 @@ import main.java.utilities.ProgramMenu;
 import main.java.utilities.PromptSelection;
 import main.java.utilities.UserType;
 
+/**
+ * A menu to remove books from inventory.
+ */
 public class RemoveBookMenu implements ProgramMenu {
     @Override
     public void display(Inventory inventory, UserType userType) {
@@ -20,27 +23,31 @@ public class RemoveBookMenu implements ProgramMenu {
 
             if (removalChoice == null) {
                 done = true;
-            }
-            else {
+            } else {
                 System.out.println();
                 done = confirmRemoval(inventory, removalChoice);
             }
         }
     }
 
-
+    /**
+     * Prompts user to confirm removal of a book.
+     *
+     * @param inventory the inventory to remove book from.
+     * @param toRemove  the book to remove from inventory.
+     * @return whether a book was removed.
+     */
     private boolean confirmRemoval(Inventory inventory, Book toRemove) {
+        System.out.println(toRemove);
         PromptSelection.StandardOption removalConfirmation = (PromptSelection.StandardOption) MenuUtil.choicePrompt(
-                "Confirm Removal:\n" + toRemove,
+                "Confirm Removal:",
                 PromptSelection.StandardOption.YES,
                 PromptSelection.StandardOption.NO
         );
 
-
         if (removalConfirmation == null) {
-            return true;
-        }
-        else if (removalConfirmation == PromptSelection.StandardOption.YES) {
+            return false;
+        } else if (removalConfirmation == PromptSelection.StandardOption.YES) {
             inventory.remove(toRemove);
             return true;
         }
