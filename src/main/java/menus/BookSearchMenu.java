@@ -53,15 +53,15 @@ public class BookSearchMenu implements ProgramMenu {
         switch (searchType) {
             case TITLE -> {
                 System.out.println();
-                titleSearch(inventory);
+                search(inventory, (Object obj) -> ((Book) obj).getTitle());
             }
             case AUTHOR -> {
                 System.out.println();
-                authorSearch(inventory);
+                search(inventory, (Object obj) -> ((Book) obj).getAuthor());
             }
             case GENRE -> {
                 System.out.println();
-                genreSearch(inventory);
+                search(inventory, (Object obj) -> ((Book) obj).getGenre());
             }
             case PRICE -> {
                 System.out.println();
@@ -70,52 +70,8 @@ public class BookSearchMenu implements ProgramMenu {
         }
     }
 
-    /**
-     * Search for a book by title.
-     *
-     * @param inventory the inventory to perform the search on.
-     */
-    private void titleSearch(Inventory inventory) {
-        ArrayList<Book> matches = new ArrayList<>();
-        String title = MenuUtil.getStringInput("Input Search Term: ");
-
-        boolean bookFound = false;
-        for (Book book : inventory.getInventory()) {
-            if (book.getTitle().equalsIgnoreCase(title)) {
-                bookFound = true;
-                matches.add(book);
-            }
-        }
-
-        if (bookFound) {
-            displayBooks(matches);
-        } else {
-            System.out.println(NONE_FOUND_MESSAGE);
-        }
-    }
-
-    /**
-     * Search for a book by author.
-     *
-     * @param inventory the inventory to perform the search on.
-     */
-    private void authorSearch(Inventory inventory) {
-        ArrayList<Book> matches = new ArrayList<>();
-        String author = MenuUtil.getStringInput("Input Search Term: ");
-
-        boolean bookFound = false;
-        for (Book book : inventory.getInventory()) {
-            if (book.getAuthor().equalsIgnoreCase(author)) {
-                bookFound = true;
-                matches.add(book);
-            }
-        }
-
-        if (bookFound) {
-            displayBooks(matches);
-        } else {
-            System.out.println(NONE_FOUND_MESSAGE);
-        }
+    private interface Checker {
+        String check(Object object);
     }
 
     /**
@@ -123,13 +79,13 @@ public class BookSearchMenu implements ProgramMenu {
      *
      * @param inventory the inventory to perform the search on.
      */
-    private void genreSearch(Inventory inventory) {
+    private void search(Inventory inventory, Checker checker) {
         ArrayList<Book> matches = new ArrayList<>();
-        String genre = MenuUtil.getStringInput("Input Search Term: ");
+        String searchTerm = MenuUtil.getStringInput("Input Search Term: ");
 
         boolean bookFound = false;
         for (Book book : inventory.getInventory()) {
-            if (book.getGenre().equalsIgnoreCase(genre)) {
+            if (checker.check(book).equalsIgnoreCase(searchTerm)) {
                 bookFound = true;
                 matches.add(book);
             }
@@ -143,7 +99,7 @@ public class BookSearchMenu implements ProgramMenu {
     }
 
     /**
-     * Search for a book by title name.
+     * Search for a book by price.
      *
      * @param inventory the inventory to perform the search on.
      */
