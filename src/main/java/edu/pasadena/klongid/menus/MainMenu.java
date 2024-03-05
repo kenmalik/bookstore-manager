@@ -26,7 +26,7 @@ public class MainMenu {
 
         // Attempt default inventory load
         try {
-            inventory = getInventory("src\\edu.pasadena.klongid\\resources\\inventory.dat");
+            inventory = getInventory("inventory.dat");
             validInventory = true;
         }
         catch (FileNotFoundException fileNotFoundException) {
