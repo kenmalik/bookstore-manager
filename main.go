@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	_ "modernc.org/sqlite"
 )
@@ -36,11 +37,31 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-    jsonEncoded, err := json.Marshal(books)
-    if err != nil {
-      log.Fatal(err)
-    }
-		fmt.Fprintf(w, string(jsonEncoded))
+		jsonEncoded, err := json.Marshal(books)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Fprint(w, string(jsonEncoded))
+	})
+
+	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
+		query := r.URL.Query()
+
+		if idParam := query.Get("id"); idParam != "" {
+			id, err := strconv.ParseInt(idParam, 10, 64)
+			if err != nil {
+				log.Fatal("/search?id="+idParam+":", err)
+			}
+			book, err := getBookById(id)
+			if err != nil {
+				log.Fatal("/search?id="+idParam+":", err)
+			}
+			jsonEncoded, err := json.Marshal(book)
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Fprint(w, string(jsonEncoded))
+		}
 	})
 
 	log.Println("Listening on port 8080")
@@ -73,6 +94,19 @@ func getAllBooks() ([]Book, error) {
 	return rowsToBooks(rows)
 }
 
+func getBookById(id int64) (Book, error) {
+	var book Book
+
+	row := db.QueryRow("SELECT * FROM books WHERE id = ?", id)
+	if err := row.Scan(&book.ID, &book.Title, &book.Author, &book.Genre, &book.Price, &book.Stock); err != nil {
+		if err == sql.ErrNoRows {
+			return book, fmt.Errorf("getBookById %d: no such book", id)
+		}
+		return book, fmt.Errorf("getBookById %d: %v", id, err)
+	}
+	return book, nil
+}
+
 func rowsToBooks(rows *sql.Rows) ([]Book, error) {
 	var books []Book
 	for rows.Next() {
@@ -86,5 +120,5 @@ func rowsToBooks(rows *sql.Rows) ([]Book, error) {
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("rowsToBooks: %v", err)
 	}
-  return books, nil
+	return books, nil
 }
