@@ -33,6 +33,10 @@ func main() {
 	log.Println("Connected to database")
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "GET" {
+			return
+		}
+
 		books, err := getAllBooks()
 		if err != nil {
 			log.Fatal(err)
@@ -45,23 +49,38 @@ func main() {
 	})
 
 	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
-		query := r.URL.Query()
-
-		if idParam := query.Get("id"); idParam != "" {
-			id, err := strconv.ParseInt(idParam, 10, 64)
-			if err != nil {
-				log.Fatal("/search?id="+idParam+":", err)
-			}
-			book, err := getBookById(id)
-			if err != nil {
-				log.Fatal("/search?id="+idParam+":", err)
-			}
-			jsonEncoded, err := json.Marshal(book)
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Fprint(w, string(jsonEncoded))
+		if r.Method != "GET" {
+			return
 		}
+
+		query := r.URL.Query()
+		var idParam string
+		if idParam = query.Get("id"); idParam == "" {
+			return
+		}
+
+		id, err := strconv.ParseInt(idParam, 10, 64)
+		if err != nil {
+			w.WriteHeader(400)
+			fmt.Fprintln(w, "Invalid search parameters")
+			return
+		}
+
+		book, err := getBookById(id)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				w.WriteHeader(404)
+				fmt.Fprintln(w, "No book with matching id")
+				return
+			}
+			log.Fatal("/search?id="+idParam+":", err)
+		}
+
+		jsonEncoded, err := json.Marshal(book)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Fprint(w, string(jsonEncoded))
 	})
 
 	log.Println("Listening on port 8080")
@@ -99,10 +118,7 @@ func getBookById(id int64) (Book, error) {
 
 	row := db.QueryRow("SELECT * FROM books WHERE id = ?", id)
 	if err := row.Scan(&book.ID, &book.Title, &book.Author, &book.Genre, &book.Price, &book.Stock); err != nil {
-		if err == sql.ErrNoRows {
-			return book, fmt.Errorf("getBookById %d: no such book", id)
-		}
-		return book, fmt.Errorf("getBookById %d: %v", id, err)
+		return book, err
 	}
 	return book, nil
 }
