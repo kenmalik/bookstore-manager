@@ -26,68 +26,16 @@ func main() {
 	log.SetPrefix("[Server] ")
 	log.SetFlags(0)
 
-	err := openDb()
-	if err != nil {
+	if err := openDb(); err != nil {
 		log.Fatal(err)
 	}
 	log.Println("Connected to database")
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			return
-		}
-
-		books, err := getAllBooks()
-		if err != nil {
-			log.Fatal(err)
-		}
-		jsonEncoded, err := json.Marshal(books)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Fprint(w, string(jsonEncoded))
-	})
-
-	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			return
-		}
-
-		query := r.URL.Query()
-		var idParam string
-		if idParam = query.Get("id"); idParam == "" {
-			return
-		}
-
-		id, err := strconv.ParseInt(idParam, 10, 64)
-		if err != nil {
-			w.WriteHeader(400)
-			fmt.Fprintln(w, "Invalid search parameters")
-			return
-		}
-
-		book, err := getBookById(id)
-		if err != nil {
-			if err == sql.ErrNoRows {
-				w.WriteHeader(404)
-				fmt.Fprintln(w, "No book with matching id")
-				return
-			}
-			log.Fatal("/search?id="+idParam+":", err)
-		}
-
-		jsonEncoded, err := json.Marshal(book)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Fprint(w, string(jsonEncoded))
-	})
+	http.HandleFunc("/all", handleAll)
+	http.HandleFunc("/search", handleSearch)
 
 	log.Println("Listening on port 8080")
-	err = http.ListenAndServe(":8080", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+  log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func openDb() error {
@@ -137,4 +85,55 @@ func rowsToBooks(rows *sql.Rows) ([]Book, error) {
 		return nil, fmt.Errorf("rowsToBooks: %v", err)
 	}
 	return books, nil
+}
+
+func handleAll(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "GET" {
+			return
+		}
+
+		books, err := getAllBooks()
+		if err != nil {
+			log.Fatal(err)
+		}
+		jsonEncoded, err := json.Marshal(books)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Fprint(w, string(jsonEncoded))
+}
+
+func handleSearch(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "GET" {
+			return
+		}
+
+		query := r.URL.Query()
+		var idParam string
+		if idParam = query.Get("id"); idParam == "" {
+			return
+		}
+
+		id, err := strconv.ParseInt(idParam, 10, 64)
+		if err != nil {
+			w.WriteHeader(400)
+			fmt.Fprintln(w, "Invalid search parameters")
+			return
+		}
+
+		book, err := getBookById(id)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				w.WriteHeader(404)
+				fmt.Fprintln(w, "No book with matching id")
+				return
+			}
+			log.Fatal("/search?id="+idParam+":", err)
+		}
+
+		jsonEncoded, err := json.Marshal(book)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Fprint(w, string(jsonEncoded))
 }
