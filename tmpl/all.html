@@ -1,15 +1,43 @@
+{{ block "all" . }}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>All Books</title>
+  <script src="https://unpkg.com/htmx.org@2.0.1"
+    integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/"
+    crossorigin="anonymous"></script>
   <link rel="stylesheet" href="css/tables.css">
 </head>
+
 <body>
   <h1>All</h1>
-  
-  <table>
+
+  {{ template "form" .Form }}
+  <hr>
+  {{ template "table" .Books }}
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.body.addEventListener("htmx:beforeSwap", (e) => {
+        const status = e.detail.xhr.status;
+        if (status === 400 || status === 404 || status === 500) {
+          e.detail.shouldSwap = true;
+          e.detail.isError = false;
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
+{{ end }}
+
+{{ block "table" . }}
+<table>
+  <thead>
     <tr>
       <th style="text-align: left;">Title</th>
       <th style="text-align: left;">Author</th>
@@ -17,19 +45,43 @@
       <th>Price</th>
       <th>Stock</th>
     </tr>
-    {{ range .Books }}
+  </thead>
+  <tbody id="books">
+    {{ range . }}
     {{ template "book" . }}
     {{ end }}
-  </table>
-</body>
-</html>
+  </tbody>
+</table>
+{{ end }}
 
 {{ block "book" . }}
 <tr>
   <td>{{ .Title }}</td>
   <td>{{ .Author }}</td>
   <td>{{ .Genre }}</td>
-  <td style="text-align: center;">${{ .Price }}</td>
+  <td style="text-align: center;">${{ printf "%.2f" .Price }}</td>
   <td style="text-align: center;">{{ .Stock }}</td>
 </tr>
+{{ end }}
+
+{{ block "form" . }}
+<form hx-swap="outerHTML" hx-get="/search" hx-push-url="true">
+  <label for="search">Search by Id: </label>
+  <input id="search" name="id" type="text" {{ if .Values.search }}value="{{ .Values.search }}" {{ end }}>
+  <button type="submit">Search</button>
+
+  {{ if .Errors.search }}
+  <div style="color: red;">
+    {{ .Errors.search }}
+  </div>
+  {{ end }}
+</form>
+{{ end }}
+
+{{ block "oob-book" . }}
+<template>
+  <tbody id="books" hx-swap-oob="true">
+    {{ template "book" . }}
+  </tbody>
+</template>
 {{ end }}
