@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Books</title>
+  <link rel="stylesheet" href="css/tables.css">
+</head>
+<body>
+  <h1>All</h1>
+  
+  <table>
+    <tr>
+      <th style="text-align: left;">Title</th>
+      <th style="text-align: left;">Author</th>
+      <th style="text-align: left;">Genre</th>
+      <th>Price</th>
+      <th>Stock</th>
+    </tr>
+    {{ range .Books }}
+    {{ template "book" . }}
+    {{ end }}
+  </table>
+</body>
+</html>
+
+{{ block "book" . }}
+<tr>
+  <td>{{ .Title }}</td>
+  <td>{{ .Author }}</td>
+  <td>{{ .Genre }}</td>
+  <td style="text-align: center;">${{ .Price }}</td>
+  <td style="text-align: center;">{{ .Stock }}</td>
+</tr>
+{{ end }}

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strconv"
@@ -12,6 +13,7 @@ import (
 )
 
 var db *sql.DB
+var templates = template.Must(template.ParseFiles("tmpl/all.html"))
 
 type Book struct {
 	ID     int64
@@ -31,6 +33,10 @@ func main() {
 	}
 	log.Println("Connected to database")
 
+  http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css"))))
+  http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
+    http.ServeFile(w, r, "index.html")
+  })
 	http.HandleFunc("/all", handleAll)
 	http.HandleFunc("/search", handleSearch)
 
@@ -87,6 +93,12 @@ func rowsToBooks(rows *sql.Rows) ([]Book, error) {
 	return books, nil
 }
 
+type Books = []Book
+
+type Data struct {
+  Books Books
+}
+
 func handleAll(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
 			return
@@ -96,11 +108,9 @@ func handleAll(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		jsonEncoded, err := json.Marshal(books)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Fprint(w, string(jsonEncoded))
+    page := Data{Books: books}
+
+    templates.ExecuteTemplate(w, "all.html", page)
 }
 
 func handleSearch(w http.ResponseWriter, r *http.Request) {
