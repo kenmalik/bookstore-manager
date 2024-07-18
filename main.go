@@ -86,13 +86,13 @@ func getAllBooks() ([]Book, error) {
 	return rowsToBooks(rows)
 }
 
-func getBookById(id int64) (Book, error) {
+func getBookById(id int64) (*Book, error) {
 	var book Book
 	row := db.QueryRow("SELECT * FROM books WHERE id = ?", id)
 	if err := row.Scan(&book.ID, &book.Title, &book.Author, &book.Genre, &book.Price, &book.Stock); err != nil {
-		return book, err
+		return nil, err
 	}
-	return book, nil
+	return &book, nil
 }
 
 func rowsToBooks(rows *sql.Rows) ([]Book, error) {
