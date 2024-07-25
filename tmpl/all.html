@@ -66,8 +66,16 @@
 
 {{ block "form" . }}
 <form hx-swap="outerHTML" hx-get="/search" hx-push-url="true">
-  <label for="search">Search by Id: </label>
-  <input id="search" name="id" type="text" {{ if .Values.search }}value="{{ .Values.search }}" {{ end }}>
+  <label for="search">Search by </label>
+  <select name="method">
+    <option value="id" {{ if eq .Method "id" }}selected="selected" {{ end }}>Id</option>
+    <option value="title" {{ if eq .Method "title" }}selected="selected" {{ end }}>Title</option>
+    <option value="author" {{ if eq .Method "author" }}selected="selected" {{ end }}>Author</option>
+    <option value="genre" {{ if eq .Method "genre" }}selected="selected" {{ end }}>Genre</option>
+    <option value="price" {{ if eq .Method "price" }}selected="selected" {{ end }}>Price</option>
+    <option value="stock" {{ if eq .Method "stock" }}selected="selected" {{ end }}>Stock</option>
+  </select>
+  <input id="search" name="value" type="text" {{ if .Values.search }}value="{{ .Values.search }}" {{ end }}>
   <button type="submit">Search</button>
 
   {{ if .Errors.search }}

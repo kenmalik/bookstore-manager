@@ -26,12 +26,14 @@ type Book struct {
 type FormData struct {
 	Values map[string]string
 	Errors map[string]string
+	Method string
 }
 
 func newFormData() FormData {
 	return FormData{
 		Values: make(map[string]string),
 		Errors: make(map[string]string),
+		Method: "id",
 	}
 }
 
@@ -86,9 +88,27 @@ func getAllBooks() ([]Book, error) {
 	return rowsToBooks(rows)
 }
 
-func getBookById(id int64) (*Book, error) {
+func getBookByInt(number int64, method string) (*Book, error) {
 	var book Book
-	row := db.QueryRow("SELECT * FROM books WHERE id = ?", id)
+	row := db.QueryRow("SELECT * FROM books WHERE "+method+" = ?", number)
+	if err := row.Scan(&book.ID, &book.Title, &book.Author, &book.Genre, &book.Price, &book.Stock); err != nil {
+		return nil, err
+	}
+	return &book, nil
+}
+
+func getBookByFloat(number float64, method string) (*Book, error) {
+	var book Book
+	row := db.QueryRow("SELECT * FROM books WHERE "+method+" = ?", number)
+	if err := row.Scan(&book.ID, &book.Title, &book.Author, &book.Genre, &book.Price, &book.Stock); err != nil {
+		return nil, err
+	}
+	return &book, nil
+}
+
+func getBookByString(term string, method string) (*Book, error) {
+	var book Book
+	row := db.QueryRow("SELECT * FROM books WHERE "+method+" = ?", term)
 	if err := row.Scan(&book.ID, &book.Title, &book.Author, &book.Genre, &book.Price, &book.Stock); err != nil {
 		return nil, err
 	}
@@ -130,38 +150,69 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := r.FormValue("id")
+	var book *Book
+	var err error
 
-	id, err := strconv.ParseInt(query, 10, 64)
-	if err != nil {
-		formData := newFormData()
-		formData.Values["search"] = query
-		formData.Errors["search"] = "Invalid search term"
-		w.Header().Add("HX-Push-Url", "false")
-    w.WriteHeader(400)
-		templates.ExecuteTemplate(w, "form", formData)
+	method := r.FormValue("method")
+	query := r.FormValue("value")
+	if query == "" {
 		return
 	}
 
-	book, err := getBookById(id)
-	if err != nil {
+	if method == "id" || method == "stock" {
+		var id int64
+		id, err = strconv.ParseInt(query, 10, 64)
+		if err != nil {
+			formData := newFormData()
+			formData.Values["search"] = query
+			formData.Errors["search"] = "Invalid search term"
+			formData.Method = method
+			w.Header().Add("HX-Push-Url", "false")
+			w.WriteHeader(400)
+			templates.ExecuteTemplate(w, "form", formData)
+			return
+		}
+		book, err = getBookByInt(id, method)
+	} else if method == "price" {
+		var price float64
+		price, err = strconv.ParseFloat(query, 64)
+		if err != nil {
+			formData := newFormData()
+			formData.Values["search"] = query
+			formData.Errors["search"] = "Invalid search term"
+			formData.Method = method
+			w.Header().Add("HX-Push-Url", "false")
+			w.WriteHeader(400)
+			templates.ExecuteTemplate(w, "form", formData)
+			return
+		}
+		book, err = getBookByFloat(price, method)
+	} else if method == "title" || method == "author" || method == "genre" {
+		book, err = getBookByString(query, method)
+	}
+
+	if err != nil || book == nil {
 		if err == sql.ErrNoRows {
 			formData := newFormData()
 			formData.Values["search"] = query
-			formData.Errors["search"] = "No book with matching id"
-      w.Header().Add("HX-Push-Url", "false")
-      w.WriteHeader(404)
+			formData.Errors["search"] = "No matching book found"
+			formData.Method = method
+			w.Header().Add("HX-Push-Url", "false")
+			w.WriteHeader(404)
 			templates.ExecuteTemplate(w, "form", formData)
 			return
 		}
 		formData := newFormData()
 		formData.Values["search"] = query
 		formData.Errors["search"] = "Server error"
-    w.WriteHeader(500)
+		formData.Method = method
+		w.WriteHeader(500)
 		templates.ExecuteTemplate(w, "form", formData)
 		return
 	}
 
-	templates.ExecuteTemplate(w, "form", newFormData())
+	formData := newFormData()
+	formData.Method = method
+	templates.ExecuteTemplate(w, "form", formData)
 	templates.ExecuteTemplate(w, "oob-book", book)
 }
